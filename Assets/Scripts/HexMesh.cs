@@ -9,10 +9,12 @@ namespace HexMap
         private Mesh hexMesh;
         private List<Vector3> vertices;
         private List<int> triangles;
+        private MeshCollider meshCollider;
 
         private void Awake()
         {
             GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
+            meshCollider = gameObject.AddComponent<MeshCollider>(); 
             hexMesh.name = "Hex Mesh";
             vertices = new List<Vector3>();
             triangles = new List<int>();
@@ -30,6 +32,7 @@ namespace HexMap
             hexMesh.vertices = vertices.ToArray();
             hexMesh.triangles = triangles.ToArray();
             hexMesh.RecalculateNormals();
+            meshCollider.sharedMesh = hexMesh;
         }
 
         private void Triangulate(HexCell cell)

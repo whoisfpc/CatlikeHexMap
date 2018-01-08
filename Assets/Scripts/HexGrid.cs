@@ -34,6 +34,31 @@ namespace HexMap
             hexMesh.Triangulate(cells);
         }
 
+        private void Update()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                HandleInput();
+            }
+        }
+
+        private void HandleInput()
+        {
+            Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(inputRay, out hit))
+            {
+                TouchCell(hit.point);
+            }
+        }
+
+        private void TouchCell(Vector3 position)
+        {
+            position = transform.InverseTransformPoint(position);
+            HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+            Debug.Log("touched at " + coordinates.ToString());
+        }
+
         private void CreateCell(int x, int z, int i)
         {
             Vector3 position;
