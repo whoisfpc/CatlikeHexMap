@@ -2,14 +2,29 @@
 
 namespace HexMap
 {
+    /// <summary>
+    /// Hexagonal coordinates, used to identify a hex cell in a hex grid,
+    /// satisfied x + y + z === 0
+    /// </summary>
     [System.Serializable]
     public struct HexCoordinates
     {
         [SerializeField]
         private int x, z;
 
+        /// <summary>
+        ///  X component of the hex coordinates
+        /// </summary>
         public int X => x;
+
+        /// <summary>
+        ///  Z component of the hex coordinates
+        /// </summary>
         public int Z => z;
+
+        /// <summary>
+        ///  Y component of the hex coordinates
+        /// </summary>
         public int Y => -X - Z;
 
         public HexCoordinates(int x, int z)
@@ -18,11 +33,22 @@ namespace HexMap
             this.z = z;
         }
 
+        /// <summary>
+        /// Convert offset coordinates to hex coordinates
+        /// </summary>
+        /// <param name="x">x component of the offset coordinates</param>
+        /// <param name="z">z component of the offset coordinates</param>
+        /// <returns>A HexCoordinates corresponding specified offset coordinates</returns>
         public static HexCoordinates FromOffsetCoordinates(int x, int z)
         {
             return new HexCoordinates(x - z / 2, z);
         }
 
+        /// <summary>
+        /// Convert position to hex coordinates
+        /// </summary>
+        /// <param name="position">gived local position in Hex Grid transform</param>
+        /// <returns>A HexCoordinates corresponding specified position</returns>
         public static HexCoordinates FromPosition(Vector3 position)
         {
             float x = position.x / (HexMetrics.innerRadius * 2f);
@@ -54,6 +80,11 @@ namespace HexMap
 
         public override string ToString() => $"({X}, {Y}, {Z})";
 
+        /// <summary>
+        /// A string represent this hex coordinates,
+        /// which every component lies on separate lines
+        /// </summary>
+        /// <returns>A string represent this hex coordinates </returns>
         public string ToStringOnSeparateLines() => $"{X}\n{Y}\n{Z}";
     }
 }

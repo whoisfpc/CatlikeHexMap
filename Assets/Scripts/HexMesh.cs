@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace HexMap
 {
+    /// <summary>
+    /// The component to generate hexagon map mesh for render
+    /// </summary>
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class HexMesh : MonoBehaviour
     {
@@ -22,6 +25,10 @@ namespace HexMap
             colors = new List<Color>();
         }
 
+        /// <summary>
+        /// Generate hexagon map mesh according to specified hex cells properties
+        /// </summary>
+        /// <param name="cells">hex cells for generating hex map</param>
         public void Triangulate(HexCell[] cells)
         {
             hexMesh.Clear();
@@ -41,6 +48,10 @@ namespace HexMap
             meshCollider.sharedMesh = hexMesh;
         }
 
+        /// <summary>
+        /// Add a triangle and corresponding vertex color according to specified hex cell
+        /// </summary>
+        /// <param name="cell">specified hex cell</param>
         private void Triangulate(HexCell cell)
         {
             var center = cell.transform.localPosition;
@@ -51,6 +62,12 @@ namespace HexMap
             }
         }
 
+        /// <summary>
+        /// Add a triangle to hex map mesh
+        /// </summary>
+        /// <param name="v1">First triangle vertex</param>
+        /// <param name="v2">Second triangle vertex</param>
+        /// <param name="v3">Third triangle vertex</param>
         private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
         {
             int vertexIndex = vertices.Count;
@@ -62,6 +79,10 @@ namespace HexMap
             triangles.Add(vertexIndex + 2);
         }
 
+        /// <summary>
+        /// Add vertex color for a triangle
+        /// </summary>
+        /// <param name="color">specified vertex color</param>
         private void AddTriangleColor(Color color)
         {
             colors.Add(color);
