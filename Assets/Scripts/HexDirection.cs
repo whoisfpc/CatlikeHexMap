@@ -45,5 +45,25 @@
         {
             return (int)direction < 3 ? (direction + 3) : (direction - 3);
         }
+
+        /// <summary>
+        /// Obtain previous direction of specified direction(clockwise direction)
+        /// </summary>
+        /// <param name="direction">the direction</param>
+        /// <returns>previous direction of specified direction</returns>
+        public static HexDirection Previous(this HexDirection direction)
+        {
+            return direction == HexDirection.NE ? HexDirection.NW : (direction - 1);
+        }
+
+        /// <summary>
+        /// Obtain next direction of specified direction(clockwise direction)
+        /// </summary>
+        /// <param name="direction">the direction</param>
+        /// <returns>next direction of specified direction</returns>
+        public static HexDirection Next(this HexDirection direction)
+        {
+            return direction == HexDirection.NW ? HexDirection.NE : (direction + 1);
+        }
     }
 }
