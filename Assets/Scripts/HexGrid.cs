@@ -55,18 +55,24 @@ namespace HexMap
         }
 
         /// <summary>
-        /// Change the hex cell's color at specified position
+        /// Refresh HexGrid, generate a new hex mesh according to cells
+        /// </summary>
+        public void Refresh()
+        {
+            hexMesh.Triangulate(cells);
+        }
+
+        /// <summary>
+        /// Obtain hex cell that at position
         /// </summary>
         /// <param name="position">Hex cell position</param>
-        /// <param name="color">Hex cell color</param>
-        public void ColorCell(Vector3 position, Color color)
+        /// <returns>the hex cell at specified position</returns>
+        public HexCell GetCell(Vector3 position)
         {
             position = transform.InverseTransformPoint(position);
             HexCoordinates coordinates = HexCoordinates.FromPosition(position);
             int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
-            HexCell cell = cells[index];
-            cell.color = color;
-            hexMesh.Triangulate(cells);
+            return cells[index];
         }
 
         /// <summary>
@@ -116,6 +122,7 @@ namespace HexMap
             label.transform.SetParent(gridCanvas.transform, false);
             label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
             label.text = cell.coordinates.ToStringOnSeparateLines();
+            cell.uiRect = label.rectTransform;
         }
     }
 }

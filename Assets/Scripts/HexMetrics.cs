@@ -42,6 +42,11 @@ namespace HexMap
         public const float blendFactor = 1f - solidFactor;
 
         /// <summary>
+        /// the height between each successive elevation step
+        /// </summary>
+        public const float elevationStep = 5f;
+
+        /// <summary>
         /// Get first corner at specified direction
         /// </summary>
         /// <param name="direction">corner direction</param>

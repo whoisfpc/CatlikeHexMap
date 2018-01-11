@@ -22,6 +22,11 @@ namespace HexMap
         /// </summary>
         private Color activeColor;
 
+        /// <summary>
+        /// Current active elevation
+        /// </summary>
+        private int activeElevation;
+
         private void Awake()
         {
             SelectColor(0);
@@ -44,8 +49,19 @@ namespace HexMap
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit))
             {
-                hexGrid.ColorCell(hit.point, activeColor);
+                EditCell(hexGrid.GetCell(hit.point));
             }
+        }
+
+        /// <summary>
+        /// Edit the cell
+        /// </summary>
+        /// <param name="cell">the cell for editing</param>
+        private void EditCell(HexCell cell)
+        {
+            cell.color = activeColor;
+            cell.Elevation = activeElevation;
+            hexGrid.Refresh();
         }
 
         /// <summary>
@@ -55,6 +71,15 @@ namespace HexMap
         public void SelectColor(int index)
         {
             activeColor = colors[index];
+        }
+
+        /// <summary>
+        /// Change the active elevation
+        /// </summary>
+        /// <param name="elevation">the new elevation</param>
+        public void SetElevation(float elevation)
+        {
+            activeElevation = (int)elevation;
         }
     }
 }

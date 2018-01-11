@@ -18,10 +18,39 @@ namespace HexMap
         public Color color;
 
         /// <summary>
+        /// rect transform of hex cell's ui label 
+        /// </summary>
+        public RectTransform uiRect;
+
+        /// <summary>
         /// neighbors of this hex cell
         /// </summary>
         [SerializeField]
         private HexCell[] neighbors;
+
+
+        private int elevation;
+        /// <summary>
+        /// elevation of this hex cell
+        /// </summary>
+        public int Elevation
+        {
+            get
+            {
+                return elevation;
+            }
+            set
+            {
+                elevation = value;
+                Vector3 position = transform.localPosition;
+                position.y = value * HexMetrics.elevationStep;
+                transform.localPosition = position;
+
+                Vector3 uiPosition = uiRect.localPosition;
+                uiPosition.z = elevation * -HexMetrics.elevationStep;
+                uiRect.localPosition = uiPosition;
+            }
+        }
 
         /// <summary>
         /// Get the neighbor of this hex cell at specified direction
