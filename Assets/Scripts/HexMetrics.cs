@@ -47,6 +47,26 @@ namespace HexMap
         public const float elevationStep = 5f;
 
         /// <summary>
+        /// Number of terraces per slope
+        /// </summary>
+        public const int terracesPerSlope = 2;
+
+        /// <summary>
+        /// Number of terrace steps per slope, it equals terracesPerSlope * 2 + 1
+        /// </summary>
+        public const int terraceSteps = terracesPerSlope * 2 + 1;
+
+        /// <summary>
+        /// Size of horizontal terrace step
+        /// </summary>
+        public const float horizontalTerraceStepSize = 1f / terraceSteps;
+
+        /// <summary>
+        /// Size of vertical terrace step
+        /// </summary>
+        public const float verticalTerraceStepSize = 1f / (terracesPerSlope + 1);
+
+        /// <summary>
         /// Get first corner at specified direction
         /// </summary>
         /// <param name="direction">corner direction</param>
@@ -94,6 +114,58 @@ namespace HexMap
         public static Vector3 GetBridge(HexDirection direction)
         {
             return (corners[(int)direction] + corners[(int)direction + 1]) * blendFactor;
+        }
+
+        /// <summary>
+        /// A special lerp for terrace steps
+        /// </summary>
+        /// <param name="a">start lerp point</param>
+        /// <param name="b">end lerp point</param>
+        /// <param name="step">lerp step</param>
+        /// <returns>corresponding point at step</returns>
+        public static Vector3 TerraceLerp(Vector3 a, Vector3 b, int step)
+        {
+            var h = step * horizontalTerraceStepSize;
+            a.x += (b.x - a.x) * h;
+            a.z += (b.z - a.z) * h;
+            var v = ((step + 1) / 2) * verticalTerraceStepSize;
+            a.y += (b.y - a.y) * v;
+            return a;
+        }
+
+        /// <summary>
+        /// Lerp for terrace slope's color
+        /// </summary>
+        /// <param name="a">start lerp color</param>
+        /// <param name="b">end lerp color</param>
+        /// <param name="step">lerp step</param>
+        /// <returns>corresponding color at step</returns>
+        public static Color TerraceLerp(Color a, Color b, int step)
+        {
+            float h = step * horizontalTerraceStepSize;
+            return Color.Lerp(a, b, h);
+        }
+
+        /// <summary>
+        /// Get the HexEdgeType by two specified elevations
+        /// </summary>
+        /// <param name="elevation1">elevation 1</param>
+        /// <param name="elevation2">elevation 2</param>
+        /// <returns>HexEdgeType for two elevations</returns>
+        public static HexEdgeType GetEdgeType(int elevation1, int elevation2)
+        {
+            if (elevation1 == elevation2)
+            {
+                return HexEdgeType.Flat;
+            }
+
+            var delta = elevation1 - elevation2;
+            if (delta == 1 || delta == -1)
+            {
+                return HexEdgeType.Slope;
+            }
+
+            return HexEdgeType.Cliff;
         }
     }
 }

@@ -71,7 +71,7 @@ namespace HexMap
             var v1 = center + HexMetrics.GetFirstSolidCorner(direction);
             var v2 = center + HexMetrics.GetSecondSolidCorner(direction);
             AddTriangle(center, v1, v2);
-            AddTriangleColor(cell.color, cell.color, cell.color);
+            AddTriangleColor(cell.color);
 
             if (direction <= HexDirection.SE)
             {
@@ -80,7 +80,7 @@ namespace HexMap
         }
 
         /// <summary>
-        /// Deal with connection between with hexagon cells,
+        /// Handle connection between with hexagon cells,
         /// including mesh and color
         /// </summary>
         /// <param name="direction">connectin direction</param>
@@ -101,17 +101,168 @@ namespace HexMap
             var v4 = v2 + bridge;
             v3.y = v4.y = neighbor.Elevation * HexMetrics.elevationStep;
 
-            AddQuad(v1, v2, v3, v4);
-            AddQuadColor(cell.color, neighbor.color);
+            if (cell.GetEdgeType(direction) == HexEdgeType.Slope)
+            {
+                TriangulateEdgeTerraces(v1, v2, cell, v3, v4, neighbor);
+            }
+            else
+            {
+                AddQuad(v1, v2, v3, v4);
+                AddQuadColor(cell.color, neighbor.color);
+            }
 
             HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
             if (direction <= HexDirection.E && nextNeighbor != null)
             {
                 var v5 = v2 + HexMetrics.GetBridge(direction.Next());
                 v5.y = nextNeighbor.Elevation * HexMetrics.elevationStep;
-                AddTriangle(v2, v4, v5);
-                AddTriangleColor(cell.color, neighbor.color, nextNeighbor.color);
+
+                if (cell.Elevation <= neighbor.Elevation)
+                {
+                    if (cell.Elevation <= nextNeighbor.Elevation)
+                    {
+                        TriangulateCorner(v2, cell, v4, neighbor, v5, nextNeighbor);
+                    }
+                    else
+                    {
+                        TriangulateCorner(v5, nextNeighbor, v2, cell, v4, neighbor);
+                    }
+                }
+                else if (neighbor.Elevation <= nextNeighbor.Elevation)
+                {
+                    TriangulateCorner(v4, neighbor, v5, nextNeighbor, v2, cell);
+                }
+                else
+                {
+                    TriangulateCorner(v5, nextNeighbor, v2, cell, v4, neighbor);
+                }
             }
+        }
+
+
+        /// <summary>
+        /// Handle edge terraces
+        /// </summary>
+        /// <param name="beginLeft">begin left point of slope trapezoid</param>
+        /// <param name="beginRight">begin right point of slope trapezoid</param>
+        /// <param name="beginCell">begin hex cell</param>
+        /// <param name="endLeft">end left point of slope trapezoid</param>
+        /// <param name="endRight">end right point of slope trapezoid</param>
+        /// <param name="endCell">end hex cell</param>
+        private void TriangulateEdgeTerraces(
+            Vector3 beginLeft, Vector3 beginRight, HexCell beginCell,
+            Vector3 endLeft, Vector3 endRight, HexCell endCell)
+        {
+            var v3 = HexMetrics.TerraceLerp(beginLeft, endLeft, 1);
+            var v4 = HexMetrics.TerraceLerp(beginRight, endRight, 1);
+            var c2 = HexMetrics.TerraceLerp(beginCell.color, endCell.color, 1);
+
+            AddQuad(beginLeft, beginRight, v3, v4);
+            AddQuadColor(beginCell.color, c2);
+
+            for (int i = 2; i < HexMetrics.terraceSteps; i++)
+            {
+                Vector3 v1 = v3;
+                Vector3 v2 = v4;
+                Color c1 = c2;
+                v3 = HexMetrics.TerraceLerp(beginLeft, endLeft, i);
+                v4 = HexMetrics.TerraceLerp(beginRight, endRight, i);
+                c2 = HexMetrics.TerraceLerp(beginCell.color, endCell.color, i);
+                AddQuad(v1, v2, v3, v4);
+                AddQuadColor(c1, c2);
+            }
+
+            AddQuad(v3, v4, endLeft, endRight);
+            AddQuadColor(c2, endCell.color);
+        }
+
+        /// <summary>
+        /// Handle corner triangle
+        /// </summary>
+        /// <param name="bottom">bottom point of triangle</params>
+        /// <param name="bottomCell">bottom hex cell</param>
+        /// <param name="left">left point of triangle</param>
+        /// <param name="leftCell">left hex cell</param>
+        /// <param name="right">right point of triangle</param>
+        /// <param name="rightCell">right hex cell</param>
+        private void TriangulateCorner(
+            Vector3 bottom, HexCell bottomCell,
+            Vector3 left, HexCell leftCell,
+            Vector3 right, HexCell rightCell)
+        {
+            HexEdgeType leftEdgeType = bottomCell.GetEdgeType(leftCell);
+            HexEdgeType rightEdgeType = bottomCell.GetEdgeType(rightCell);
+
+            if (leftEdgeType == HexEdgeType.Slope)
+            {
+                if (rightEdgeType == HexEdgeType.Slope)
+                {
+                    TriangulateCornerTerraces(
+                        bottom, bottomCell, left, leftCell, right, rightCell
+                    );
+                    return;
+                }
+                if (rightEdgeType == HexEdgeType.Flat)
+                {
+                    TriangulateCornerTerraces(
+                        left, leftCell, right, rightCell, bottom, bottomCell
+                    );
+                    return;
+                }
+            }
+            if (rightEdgeType == HexEdgeType.Slope)
+            {
+                if (leftEdgeType == HexEdgeType.Flat)
+                {
+                    TriangulateCornerTerraces(
+                        right, rightCell, bottom, bottomCell, left, leftCell
+                    );
+                    return;
+                }
+            }
+
+            AddTriangle(bottom, left, right);
+            AddTriangleColor(bottomCell.color, leftCell.color, rightCell.color);
+        }
+
+        /// <summary>
+        /// Handle corner triangle terraces
+        /// </summary>
+        /// <param name="begin">begin point of triangle</params>
+        /// <param name="beginCell">begin hex cell</param>
+        /// <param name="left">left point of triangle</param>
+        /// <param name="leftCell">left hex cell</param>
+        /// <param name="right">right point of triangle</param>
+        /// <param name="rightCell">right hex cell</param>
+        private void TriangulateCornerTerraces(
+            Vector3 begin, HexCell beginCell,
+            Vector3 left, HexCell leftCell,
+            Vector3 right, HexCell rightCell)
+        {
+            Vector3 v3 = HexMetrics.TerraceLerp(begin, left, 1);
+            Vector3 v4 = HexMetrics.TerraceLerp(begin, right, 1);
+            Color c3 = HexMetrics.TerraceLerp(beginCell.color, leftCell.color, 1);
+            Color c4 = HexMetrics.TerraceLerp(beginCell.color, rightCell.color, 1);
+
+            AddTriangle(begin, v3, v4);
+            AddTriangleColor(beginCell.color, c3, c4);
+
+            for (int i = 2; i < HexMetrics.terraceSteps; i++)
+            {
+                Vector3 v1 = v3;
+                Vector3 v2 = v4;
+                Color c1 = c3;
+                Color c2 = c4;
+                v3 = HexMetrics.TerraceLerp(begin, left, i);
+                v4 = HexMetrics.TerraceLerp(begin, right, i);
+                c3 = HexMetrics.TerraceLerp(beginCell.color, leftCell.color, i);
+                c4 = HexMetrics.TerraceLerp(beginCell.color, rightCell.color, i);
+                AddQuad(v1, v2, v3, v4);
+                AddQuadColor(c1, c2, c3, c4);
+            }
+
+            AddQuad(v3, v4, left, right);
+            AddQuadColor(c3, c4, leftCell.color, rightCell.color);
         }
 
         /// <summary>
@@ -129,6 +280,17 @@ namespace HexMap
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 1);
             triangles.Add(vertexIndex + 2);
+        }
+
+        /// <summary>
+        /// Add vertex color for a triangle
+        /// </summary>
+        /// <param name="color">vertex color</param>
+        private void AddTriangleColor(Color color)
+        {
+            colors.Add(color);
+            colors.Add(color);
+            colors.Add(color);
         }
 
         /// <summary>
@@ -177,6 +339,21 @@ namespace HexMap
             colors.Add(c1);
             colors.Add(c2);
             colors.Add(c2);
+        }
+
+        /// <summary>
+        /// Add vertex color for a quad
+        /// </summary>
+        /// <param name="c1">first vertex color</param>
+        /// <param name="c2">second vertex color</param>
+        /// <param name="c3">third vertex color</param>
+        /// <param name="c4">fourth vertex color</param>
+        private void AddQuadColor(Color c1, Color c2, Color c3, Color c4)
+        {
+            colors.Add(c1);
+            colors.Add(c2);
+            colors.Add(c3);
+            colors.Add(c4);
         }
     }
 }
