@@ -31,12 +31,18 @@ namespace HexMap
         /// </summary>
         public Color defaultColor = Color.white;
 
+        /// <summary>
+        /// Noise texture for irregularity
+        /// </summary>
+        public Texture2D noiseSource;
+
         private HexCell[] cells;
         private Canvas gridCanvas;
         private HexMesh hexMesh;
 
         private void Awake()
         {
+            HexMetrics.noiseSource = noiseSource;
             gridCanvas = GetComponentInChildren<Canvas>();
             hexMesh = GetComponentInChildren<HexMesh>();
             cells = new HexCell[height * width];
@@ -47,6 +53,11 @@ namespace HexMap
                     CreateCell(x, z, i++);
                 }
             }
+        }
+
+        private void OnEnable()
+        {
+            HexMetrics.noiseSource = noiseSource;
         }
 
         private void Start()
@@ -123,6 +134,7 @@ namespace HexMap
             label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
             label.text = cell.coordinates.ToStringOnSeparateLines();
             cell.uiRect = label.rectTransform;
+            cell.Elevation = 0;
         }
     }
 }

@@ -167,5 +167,35 @@ namespace HexMap
 
             return HexEdgeType.Cliff;
         }
+
+        /// <summary>
+        /// Noise texture for irregularity
+        /// </summary>
+        public static Texture2D noiseSource;
+
+        /// <summary>
+        /// Perturb strength
+        /// </summary>
+        public const float cellPerturbStrength = 5f;
+
+        /// <summary>
+        /// Perturb strength for elevation
+        /// </summary>
+        public const float elevationPerturbStrength = 1.5f;
+
+        /// <summary>
+        /// Noise sample scale
+        /// </summary>
+        public const float noiseScale = 0.003f;
+
+        /// <summary>
+        /// Sample noise color at position
+        /// </summary>
+        /// <param name="position">position</param>
+        /// <returns>bilinear filtered color at position</returns>
+        public static Vector4 SampleNoise(Vector3 position)
+        {
+            return noiseSource.GetPixelBilinear(position.x * noiseScale, position.z * noiseScale);
+        }
     }
 }

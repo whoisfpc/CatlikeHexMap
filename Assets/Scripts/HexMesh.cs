@@ -67,7 +67,7 @@ namespace HexMap
         /// <param name="cell">hex cell</param>
         private void Triangulate(HexDirection direction, HexCell cell)
         {
-            var center = cell.transform.localPosition;
+            var center = cell.Position;
             var v1 = center + HexMetrics.GetFirstSolidCorner(direction);
             var v2 = center + HexMetrics.GetSecondSolidCorner(direction);
             AddTriangle(center, v1, v2);
@@ -99,7 +99,7 @@ namespace HexMap
             var bridge = HexMetrics.GetBridge(direction);
             var v3 = v1 + bridge;
             var v4 = v2 + bridge;
-            v3.y = v4.y = neighbor.Elevation * HexMetrics.elevationStep;
+            v3.y = v4.y = neighbor.Position.y;
 
             if (cell.GetEdgeType(direction) == HexEdgeType.Slope)
             {
@@ -115,7 +115,7 @@ namespace HexMap
             if (direction <= HexDirection.E && nextNeighbor != null)
             {
                 var v5 = v2 + HexMetrics.GetBridge(direction.Next());
-                v5.y = nextNeighbor.Elevation * HexMetrics.elevationStep;
+                v5.y = nextNeighbor.Position.y;
 
                 if (cell.Elevation <= neighbor.Elevation)
                 {
@@ -397,9 +397,9 @@ namespace HexMap
         private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
         {
             int vertexIndex = vertices.Count;
-            vertices.Add(v1);
-            vertices.Add(v2);
-            vertices.Add(v3);
+            vertices.Add(Perturb(v1));
+            vertices.Add(Perturb(v2));
+            vertices.Add(Perturb(v3));
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 1);
             triangles.Add(vertexIndex + 2);
@@ -439,10 +439,10 @@ namespace HexMap
         private void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4)
         {
             int vertexIndex = vertices.Count;
-            vertices.Add(v1);
-            vertices.Add(v2);
-            vertices.Add(v3);
-            vertices.Add(v4);
+            vertices.Add(Perturb(v1));
+            vertices.Add(Perturb(v2));
+            vertices.Add(Perturb(v3));
+            vertices.Add(Perturb(v4));
             triangles.Add(vertexIndex);
             triangles.Add(vertexIndex + 2);
             triangles.Add(vertexIndex + 1);
@@ -477,6 +477,19 @@ namespace HexMap
             colors.Add(c2);
             colors.Add(c3);
             colors.Add(c4);
+        }
+
+        /// <summary>
+        /// Perturb position according to noise texture
+        /// </summary>
+        /// <param name="position">position to perturb</param>
+        /// <returns>position after perturbed</returns>
+        private Vector3 Perturb(Vector3 position)
+        {
+            Vector4 sample = HexMetrics.SampleNoise(position);
+            position.x += (sample.x * 2f - 1f) * HexMetrics.cellPerturbStrength;
+            position.z += (sample.z * 2f - 1f) * HexMetrics.cellPerturbStrength;
+            return position;
         }
     }
 }
