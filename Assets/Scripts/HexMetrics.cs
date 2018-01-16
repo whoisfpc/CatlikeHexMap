@@ -34,7 +34,7 @@ namespace HexMap
         /// <summary>
         /// Solid factor of the hex cell
         /// </summary>
-        public const float solidFactor = 0.75f;
+        public const float solidFactor = 0.8f;
 
         /// <summary>
         /// Blend factor of the hex cell, it equals 1 - solidFactor
@@ -44,7 +44,7 @@ namespace HexMap
         /// <summary>
         /// the height between each successive elevation step
         /// </summary>
-        public const float elevationStep = 5f;
+        public const float elevationStep = 3f;
 
         /// <summary>
         /// Number of terraces per slope
@@ -176,7 +176,7 @@ namespace HexMap
         /// <summary>
         /// Perturb strength
         /// </summary>
-        public const float cellPerturbStrength = 5f;
+        public const float cellPerturbStrength = 4f;
 
         /// <summary>
         /// Perturb strength for elevation
