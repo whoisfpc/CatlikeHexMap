@@ -12,15 +12,34 @@ namespace HexMap
         /// </summary>
         public HexCoordinates coordinates;
 
+        private Color color;
         /// <summary>
         /// color of this hex cell
         /// </summary>
-        public Color color;
+        public Color Color
+        {
+            get
+            {
+                return color;
+            }
+            set
+            {
+                if (color == value)
+                    return;
+                color = value;
+                Refresh();
+            }
+        }
 
         /// <summary>
         /// rect transform of hex cell's ui label 
         /// </summary>
         public RectTransform uiRect;
+
+        /// <summary>
+        /// grid chunk it belongs to
+        /// </summary>
+        public HexGridChunk chunk;
 
         /// <summary>
         /// neighbors of this hex cell
@@ -29,7 +48,7 @@ namespace HexMap
         private HexCell[] neighbors;
 
 
-        private int elevation;
+        private int elevation = int.MinValue;
         /// <summary>
         /// elevation of this hex cell
         /// </summary>
@@ -41,6 +60,8 @@ namespace HexMap
             }
             set
             {
+                if (elevation == value)
+                    return;
                 elevation = value;
                 Vector3 position = transform.localPosition;
                 position.y = value * HexMetrics.elevationStep;
@@ -50,6 +71,7 @@ namespace HexMap
                 Vector3 uiPosition = uiRect.localPosition;
                 uiPosition.z = -position.y;
                 uiRect.localPosition = uiPosition;
+                Refresh();
             }
         }
 
@@ -74,6 +96,20 @@ namespace HexMap
         public HexEdgeType GetEdgeType(HexCell otherCell)
         {
             return HexMetrics.GetEdgeType( elevation, otherCell.elevation );
+        }
+
+        private void Refresh()
+        {
+            if (chunk)
+                chunk.Refresh();
+            for (int i = 0; i < neighbors.Length; i++)
+            {
+                var neighbor = neighbors[i];
+                if (neighbor != null && neighbor.chunk != chunk)
+                {
+                    neighbor.chunk.Refresh();
+                }
+            }
         }
     }
 }

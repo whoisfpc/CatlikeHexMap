@@ -8,6 +8,11 @@ namespace HexMap
     public static class HexMetrics
     {
         /// <summary>
+        /// cell size per chunk
+        /// </summary>
+        public const int chunkSizeX = 5, chunkSizeZ = 5;
+
+        /// <summary>
         /// Radius of the outer circle of hex cell
         /// </summary>
         public const float outerRadius = 10f;

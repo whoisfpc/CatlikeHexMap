@@ -59,9 +59,8 @@ namespace HexMap
         /// <param name="cell">the cell for editing</param>
         private void EditCell(HexCell cell)
         {
-            cell.color = activeColor;
+            cell.Color = activeColor;
             cell.Elevation = activeElevation;
-            hexGrid.Refresh();
         }
 
         /// <summary>
