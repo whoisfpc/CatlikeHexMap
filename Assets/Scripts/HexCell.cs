@@ -55,42 +55,22 @@ namespace HexMap
 
         public Vector3 Position => transform.localPosition;
 
-        /// <summary>
-        /// Get the neighbor of this hex cell at specified direction
-        /// </summary>
-        /// <param name="direction">the direction to obtain hex cell</param>
-        /// <returns>the hex cell at specified direction</returns>
         public HexCell GetNeighbor(HexDirection direction)
         {
             return neighbors[(int)direction];
         }
 
-        /// <summary>
-        /// Set the neighbor of this hex cell at specified direction
-        /// </summary>
-        /// <param name="direction">the direction to set neighbor</param>
-        /// <param name="cell">the hex cell at specified direction as neighbor</param>
         public void SetNeighbor(HexDirection direction, HexCell cell)
         {
             neighbors[(int)direction] = cell;
             cell.neighbors[(int)direction.Opposite()] = this;
         }
 
-        /// <summary>
-        /// Get HexEdgeType at specified direction
-        /// </summary>
-        /// <param name="direction">the direction</param>
-        /// <returns>HexEdgeType at that direction</returns>
         public HexEdgeType GetEdgeType(HexDirection direction)
         {
             return HexMetrics.GetEdgeType(elevation, neighbors[(int)direction].elevation);
         }
 
-        /// <summary>
-        /// Get HexEdgeType with other hex cell
-        /// </summary>
-        /// <param name="otherCell">the other hex cell</param>
-        /// <returns>HexEdgeType for this hex cell and other hex cell</returns>
         public HexEdgeType GetEdgeType(HexCell otherCell)
         {
             return HexMetrics.GetEdgeType( elevation, otherCell.elevation );

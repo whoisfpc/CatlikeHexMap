@@ -3,9 +3,6 @@ using UnityEditor;
 
 namespace HexMap
 {
-    /// <summary>
-    /// Property drawer for showing HexCoordinates
-    /// </summary>
     [CustomPropertyDrawer(typeof(HexCoordinates))]
     public class HexCoordinatesDrawer : PropertyDrawer
     {

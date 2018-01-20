@@ -17,13 +17,8 @@ namespace HexMap
         /// </summary>
         public int height = 6;
 
-        /// <summary>
-        /// Hex cell prefab for generating
-        /// </summary>
         public HexCell cellPrefab;
-        /// <summary>
-        /// Hex cell label prefab for displaying information
-        /// </summary>
+
         public Text cellLabelPrefab;
 
         /// <summary>

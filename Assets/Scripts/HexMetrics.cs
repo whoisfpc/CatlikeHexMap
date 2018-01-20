@@ -3,7 +3,7 @@
 namespace HexMap
 {
     /// <summary>
-    /// Hexagon cell's metrics
+    /// Hexagon cell's metrics, contains properties for Hexagon cells and hex map
     /// </summary>
     public static class HexMetrics
     {
