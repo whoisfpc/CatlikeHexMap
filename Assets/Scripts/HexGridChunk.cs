@@ -16,6 +16,7 @@ namespace HexMap
             hexMesh = GetComponentInChildren<HexMesh>();
 
             cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
+            gridCanvas.worldCamera = Camera.main;
             ShowUI(false);
         }
 
