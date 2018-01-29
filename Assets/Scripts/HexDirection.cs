@@ -57,6 +57,17 @@
         }
 
         /// <summary>
+        /// Obtain previous of previous direction of specified direction(clockwise direction)
+        /// </summary>
+        /// <param name="direction">the direction</param>
+        /// <returns>previous direction of specified direction</returns>
+        public static HexDirection Previous2(this HexDirection direction)
+        {
+            direction -= 2;
+            return direction >= HexDirection.NE ? direction : (direction + 6);
+        }
+
+        /// <summary>
         /// Obtain next direction of specified direction(clockwise direction)
         /// </summary>
         /// <param name="direction">the direction</param>
@@ -64,6 +75,17 @@
         public static HexDirection Next(this HexDirection direction)
         {
             return direction == HexDirection.NW ? HexDirection.NE : (direction + 1);
+        }
+
+        /// <summary>
+        /// Obtain next of next direction of specified direction(clockwise direction)
+        /// </summary>
+        /// <param name="direction">the direction</param>
+        /// <returns>next direction of specified direction</returns>
+        public static HexDirection Next2(this HexDirection direction)
+        {
+            direction += 2;
+            return direction <= HexDirection.NW ? direction : (direction - 6);
         }
     }
 }

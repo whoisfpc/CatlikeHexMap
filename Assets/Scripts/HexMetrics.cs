@@ -17,6 +17,10 @@ namespace HexMap
         /// </summary>
         public const int chunkSizeX = 5, chunkSizeZ = 5;
 
+        public const float outerToInner = 0.866025404f;
+
+        public const float innerToOuter = 1f / outerToInner;
+
         /// <summary>
         /// Radius of the outer circle of hex cell
         /// </summary>
@@ -25,7 +29,7 @@ namespace HexMap
         /// <summary>
         /// Radius of the inner circle of hex cell
         /// </summary>
-        public const float innerRadius = outerRadius * 0.866025404f;
+        public const float innerRadius = outerRadius * outerToInner;
         
         /// <summary>
         /// Corners of the hex cell, clockwise direction
@@ -178,6 +182,11 @@ namespace HexMap
             return HexEdgeType.Cliff;
         }
 
+        public static Vector3 GetSolidEdgeMiddle(HexDirection direction)
+        {
+            return (corners[(int)direction] + corners[(int)direction + 1]) * (0.5f * solidFactor);
+        }
+
         /// <summary>
         /// Noise texture for irregularity
         /// </summary>
@@ -186,7 +195,7 @@ namespace HexMap
         /// <summary>
         /// Perturb strength
         /// </summary>
-        public const float cellPerturbStrength = 4f;
+        public const float cellPerturbStrength = 0f;//4f;
 
         /// <summary>
         /// Perturb strength for elevation

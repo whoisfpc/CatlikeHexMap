@@ -70,17 +70,80 @@ namespace HexMap
                 center + HexMetrics.GetSecondSolidCorner(direction)
             );
 
-            if (cell.HasRiverThroughEdge(direction))
+            if (cell.HasRiver)
             {
-                e.v3.y = cell.StreamBedY;
+                if (cell.HasRiverThroughEdge(direction))
+                {
+                    e.v3.y = cell.StreamBedY;
+                    if (cell.HasRiverBeginOrEnd)
+                    {
+                        TriangulateWithRiverBeginOrEnd(direction, cell, center, e);
+                    }
+                    else
+                    {
+                        TriangulateWithRiver(direction, cell, center, e);
+                    }
+                }
             }
-
-            TriangulateEdgeFan(center, e, cell.Color);
+            else
+            {
+                TriangulateEdgeFan(center, e, cell.Color);
+            }
 
             if (direction <= HexDirection.SE)
             {
                 TriangulateConnection(direction, cell, e);
             }
+        }
+
+        private void TriangulateWithRiverBeginOrEnd(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
+        {
+            EdgeVertices m = new EdgeVertices(Vector3.Lerp(center, e.v1, 0.5f), Vector3.Lerp(center, e.v5, 0.5f));
+            m.v3.y = e.v3.y;
+            TriangulateEdgeStrip(m, cell.Color, e, cell.Color);
+            TriangulateEdgeFan(center, m, cell.Color);
+        }
+
+        private void TriangulateWithRiver(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
+        {
+            Vector3 centerL, centerR;
+            if (cell.HasRiverThroughEdge(direction.Opposite()))
+            {
+                centerL = center + HexMetrics.GetFirstSolidCorner(direction.Previous()) * 0.25f;
+                centerR = center + HexMetrics.GetSecondSolidCorner(direction.Next()) * 0.25f;
+            }
+            else if (cell.HasRiverThroughEdge(direction.Next()))
+            {
+                centerL = center;
+                centerR = Vector3.Lerp(center, e.v5, 2f / 3f);
+            }
+            else if (cell.HasRiverThroughEdge(direction.Previous()))
+            {
+                centerL = Vector3.Lerp(center, e.v1, 2f / 3f);
+                centerR = center;
+            }
+            else if (cell.HasRiverThroughEdge(direction.Next2()))
+            {
+                centerL = center;
+                centerR = center + HexMetrics.GetSolidEdgeMiddle(direction.Next()) * (0.5f * HexMetrics.innerToOuter);
+            }
+            else
+            {
+                centerL = center + HexMetrics.GetSolidEdgeMiddle(direction.Previous()) * (0.5f * HexMetrics.innerToOuter);
+                centerR = center;
+            }
+            center = Vector3.Lerp(centerL, centerR, 0.5f);
+            EdgeVertices m = new EdgeVertices(Vector3.Lerp(centerL, e.v1, 0.5f), Vector3.Lerp(centerR, e.v5, 0.5f), 1f / 6f);
+            m.v3.y = center.y = e.v3.y;
+            TriangulateEdgeStrip(m, cell.Color, e, cell.Color);
+            AddTriangle(centerL, m.v1, m.v2);
+            AddTriangleColor(cell.Color);
+            AddQuad(centerL, center, m.v2, m.v3);
+            AddQuadColor(cell.Color);
+            AddQuad(center, centerR, m.v3, m.v4);
+            AddQuadColor(cell.Color);
+            AddTriangle(centerR, m.v4, m.v5);
+            AddTriangleColor(cell.Color);
         }
 
         private void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, Color color)
@@ -126,12 +189,10 @@ namespace HexMap
             var bridge = HexMetrics.GetBridge(direction);
             bridge.y = neighbor.Position.y - cell.Position.y;
             EdgeVertices e2 = new EdgeVertices(e1.v1 + bridge, e1.v5 + bridge);
-
             if (cell.HasRiverThroughEdge(direction))
             {
                 e2.v3.y = neighbor.StreamBedY;
             }
-
             if (cell.GetEdgeType(direction) == HexEdgeType.Slope)
             {
                 TriangulateEdgeTerraces(e1, cell, e2, neighbor);
@@ -168,7 +229,6 @@ namespace HexMap
                 }
             }
         }
-
 
         /// <summary>
         /// Handle edge terraces
@@ -488,6 +548,18 @@ namespace HexMap
             triangles.Add(vertexIndex + 1);
             triangles.Add(vertexIndex + 2);
             triangles.Add(vertexIndex + 3);
+        }
+
+        /// <summary>
+        /// Add vertex color for a quad
+        /// </summary>
+        /// <param name="color">first vertex color</param>
+        private void AddQuadColor(Color color)
+        {
+            colors.Add(color);
+            colors.Add(color);
+            colors.Add(color);
+            colors.Add(color);
         }
 
         /// <summary>
