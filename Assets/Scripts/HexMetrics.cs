@@ -8,6 +8,11 @@ namespace HexMap
     public static class HexMetrics
     {
         /// <summary>
+        /// Stream bed elevation offset
+        /// </summary>
+        public const float streamBedElevationOffset = -1f;
+
+        /// <summary>
         /// cell size per chunk
         /// </summary>
         public const int chunkSizeX = 5, chunkSizeZ = 5;

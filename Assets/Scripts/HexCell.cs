@@ -48,6 +48,11 @@ namespace HexMap
         public bool HasRiverBeginOrEnd => hasIncomingRiver != hasOutgoingRiver;
 
         /// <summary>
+        /// Stream bed y position
+        /// </summary>
+        public float StreamBedY => (elevation + HexMetrics.streamBedElevationOffset) * HexMetrics.elevationStep;
+
+        /// <summary>
         /// rect transform of hex cell's ui label 
         /// </summary>
         public RectTransform uiRect;
