@@ -216,5 +216,18 @@ namespace HexMap
         {
             return noiseSource.GetPixelBilinear(position.x * noiseScale, position.z * noiseScale);
         }
+
+        /// <summary>
+        /// Perturb position according to noise texture
+        /// </summary>
+        /// <param name="position">position to perturb</param>
+        /// <returns>position after perturbed</returns>
+        public static Vector3 Perturb(Vector3 position)
+        {
+            Vector4 sample = SampleNoise(position);
+            position.x += (sample.x * 2f - 1f) * cellPerturbStrength;
+            position.z += (sample.z * 2f - 1f) * cellPerturbStrength;
+            return position;
+        }
     }
 }
