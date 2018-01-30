@@ -53,6 +53,11 @@ namespace HexMap
         public float StreamBedY => (elevation + HexMetrics.streamBedElevationOffset) * HexMetrics.elevationStep;
 
         /// <summary>
+        /// River surface y position
+        /// </summary>
+        public float RiverSurfaceY => (elevation + HexMetrics.riverSurfaceElevationOffset) * HexMetrics.elevationStep;
+
+        /// <summary>
         /// rect transform of hex cell's ui label 
         /// </summary>
         public RectTransform uiRect;

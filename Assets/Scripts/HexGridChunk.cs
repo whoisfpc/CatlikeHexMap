@@ -5,9 +5,10 @@ namespace HexMap
 {
     public class HexGridChunk : MonoBehaviour
     {
-        private HexCell[] cells;
-
         public HexMesh terrain;
+        public HexMesh rivers;
+
+        private HexCell[] cells;
         private Canvas gridCanvas;
 
         private void Awake()
@@ -52,11 +53,13 @@ namespace HexMap
         public void Triangulate()
         {
             terrain.Clear();
+            rivers.Clear();
             for (int i = 0; i < cells.Length; i++)
             {
                 Triangulate(cells[i]);
             }
             terrain.Apply();
+            rivers.Apply();
         }
 
         /// <summary>
@@ -120,6 +123,18 @@ namespace HexMap
             m.v3.y = e.v3.y;
             TriangulateEdgeStrip(m, cell.Color, e, cell.Color);
             TriangulateEdgeFan(center, m, cell.Color);
+            bool reversed = cell.HasIncomingRiver;
+            TriangulateRiverQuad(m.v2, m.v4, e.v2, e.v4, cell.RiverSurfaceY, 0.6f, reversed);
+            center.y = m.v2.y = m.v4.y = cell.RiverSurfaceY;
+            rivers.AddTriangle(center, m.v2, m.v4);
+            if (reversed)
+            {
+                rivers.AddTriangleUV(new Vector2(0.5f, 0.4f), new Vector2(1f, 0.2f), new Vector2(0f, 0.2f));
+            }
+            else
+            {
+                rivers.AddTriangleUV(new Vector2(0.5f, 0.4f), new Vector2(0f, 0.6f), new Vector2(1f, 0.6f));
+            }
         }
 
         private void TriangulateWithRiver(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
@@ -162,6 +177,9 @@ namespace HexMap
             terrain.AddQuadColor(cell.Color);
             terrain.AddTriangle(centerR, m.v4, m.v5);
             terrain.AddTriangleColor(cell.Color);
+            bool reversed = cell.IncomingRiver == direction;
+            TriangulateRiverQuad(centerL, centerR, m.v2, m.v4, cell.RiverSurfaceY, 0.4f, reversed);
+            TriangulateRiverQuad(m.v2, m.v4, e.v2, e.v4, cell.RiverSurfaceY, 0.6f, reversed);
         }
 
         private void TriangulateAdjacentToRiver(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
@@ -233,6 +251,7 @@ namespace HexMap
             if (cell.HasRiverThroughEdge(direction))
             {
                 e2.v3.y = neighbor.StreamBedY;
+                TriangulateRiverQuad(e1.v2, e1.v4, e2.v2, e2.v4, cell.RiverSurfaceY, neighbor.RiverSurfaceY, 0.8f, cell.HasIncomingRiver && cell.IncomingRiver == direction);
             }
             if (cell.GetEdgeType(direction) == HexEdgeType.Slope)
             {
@@ -278,9 +297,7 @@ namespace HexMap
         /// <param name="beginCell">begin hex cell</param>
         /// <param name="end">end edge of slope trapezoid</param>
         /// <param name="endCell">end hex cell</param>
-        private void TriangulateEdgeTerraces(
-            EdgeVertices begin, HexCell beginCell,
-            EdgeVertices end, HexCell endCell)
+        private void TriangulateEdgeTerraces(EdgeVertices begin, HexCell beginCell, EdgeVertices end, HexCell endCell)
         {
             EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
             var c2 = HexMetrics.TerraceLerp(beginCell.Color, endCell.Color, 1);
@@ -308,10 +325,7 @@ namespace HexMap
         /// <param name="leftCell">left hex cell</param>
         /// <param name="right">right point of triangle</param>
         /// <param name="rightCell">right hex cell</param>
-        private void TriangulateCorner(
-            Vector3 bottom, HexCell bottomCell,
-            Vector3 left, HexCell leftCell,
-            Vector3 right, HexCell rightCell)
+        private void TriangulateCorner(Vector3 bottom, HexCell bottomCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
         {
             HexEdgeType leftEdgeType = bottomCell.GetEdgeType(leftCell);
             HexEdgeType rightEdgeType = bottomCell.GetEdgeType(rightCell);
@@ -384,10 +398,7 @@ namespace HexMap
         /// <param name="leftCell">left hex cell</param>
         /// <param name="right">right point of triangle</param>
         /// <param name="rightCell">right hex cell</param>
-        private void TriangulateCornerTerraces(
-            Vector3 begin, HexCell beginCell,
-            Vector3 left, HexCell leftCell,
-            Vector3 right, HexCell rightCell)
+        private void TriangulateCornerTerraces(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
         {
             Vector3 v3 = HexMetrics.TerraceLerp(begin, left, 1);
             Vector3 v4 = HexMetrics.TerraceLerp(begin, right, 1);
@@ -424,10 +435,7 @@ namespace HexMap
         /// <param name="leftCell">left hex cell</param>
         /// <param name="right">right point of triangle</param>
         /// <param name="rightCell">right hex cell</param>
-        private void TriangulateCornerTerracesCliff(
-            Vector3 begin, HexCell beginCell,
-            Vector3 left, HexCell leftCell,
-            Vector3 right, HexCell rightCell)
+        private void TriangulateCornerTerracesCliff(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
         {
             float b = 1f / (rightCell.Elevation - beginCell.Elevation);
             if (b < 0)
@@ -459,10 +467,7 @@ namespace HexMap
         /// <param name="leftCell">left hex cell</param>
         /// <param name="right">right point of triangle</param>
         /// <param name="rightCell">right hex cell</param>
-        private void TriangulateCornerCliffTerraces(
-            Vector3 begin, HexCell beginCell,
-            Vector3 left, HexCell leftCell,
-            Vector3 right, HexCell rightCell)
+        private void TriangulateCornerCliffTerraces(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
         {
             float b = 1f / (leftCell.Elevation - beginCell.Elevation);
             if (b < 0)
@@ -485,11 +490,7 @@ namespace HexMap
             }
         }
 
-        private void TriangulateBoundaryTriangle(
-            Vector3 begin, HexCell beginCell,
-            Vector3 left, HexCell leftCell,
-            Vector3 boundary, Color boundaryColor
-        )
+        private void TriangulateBoundaryTriangle(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 boundary, Color boundaryColor)
         {
             Vector3 v2 = HexMetrics.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
             Color c2 = HexMetrics.TerraceLerp(beginCell.Color, leftCell.Color, 1);
@@ -509,6 +510,26 @@ namespace HexMap
 
             terrain.AddTriangleUnperturbed(v2, HexMetrics.Perturb(left), boundary);
             terrain.AddTriangleColor(c2, leftCell.Color, boundaryColor);
+        }
+
+        private void TriangulateRiverQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, float y1, float y2, float v, bool reversed)
+        {
+            v1.y = v2.y = y1;
+            v3.y = v4.y = y2;
+            rivers.AddQuad(v1, v2, v3, v4);
+            if (reversed)
+            {
+                rivers.AddQuadUV(1f, 0f, 0.8f - v, 0.6f - v);
+            }
+            else
+            {
+                rivers.AddQuadUV(0f, 1f, v, v + 0.2f);
+            }
+        }
+
+        private void TriangulateRiverQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, float y, float v, bool reversed)
+        {
+            TriangulateRiverQuad(v1, v2, v3, v4, y, y, v, reversed);
         }
     }
 }
