@@ -10,7 +10,7 @@ namespace HexMap
         /// <summary>
         /// Stream bed elevation offset
         /// </summary>
-        public const float streamBedElevationOffset = -1f;
+        public const float streamBedElevationOffset = -1.75f;
 
         /// <summary>
         /// River surface elevation offset
@@ -200,7 +200,7 @@ namespace HexMap
         /// <summary>
         /// Perturb strength
         /// </summary>
-        public const float cellPerturbStrength = 0f;//4f;
+        public const float cellPerturbStrength = 4f;
 
         /// <summary>
         /// Perturb strength for elevation
