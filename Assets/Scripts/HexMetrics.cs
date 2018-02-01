@@ -13,9 +13,9 @@ namespace HexMap
         public const float streamBedElevationOffset = -1.75f;
 
         /// <summary>
-        /// River surface elevation offset
+        /// Water surface elevation offset
         /// </summary>
-        public const float riverSurfaceElevationOffset = -0.5f;
+        public const float waterElevationOffset = -0.5f;
 
         /// <summary>
         /// cell size per chunk

@@ -49,6 +49,26 @@ namespace HexMap
 
         public HexDirection RiverBeginOrEndDirection => hasIncomingRiver ? incomingRiver : outgoingRiver;
 
+        private int waterLevel;
+        public int WaterLevel
+        {
+            get
+            {
+                return waterLevel;
+            }
+            set
+            {
+                if (waterLevel == value)
+                {
+                    return;
+                }
+                waterLevel = value;
+                Refresh();
+            }
+        }
+
+        public bool IsUnderwater => waterLevel > elevation;
+
         /// <summary>
         /// Stream bed y position
         /// </summary>
@@ -57,7 +77,12 @@ namespace HexMap
         /// <summary>
         /// River surface y position
         /// </summary>
-        public float RiverSurfaceY => (elevation + HexMetrics.riverSurfaceElevationOffset) * HexMetrics.elevationStep;
+        public float RiverSurfaceY => (elevation + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
+
+        /// <summary>
+        /// Water surface y position
+        /// </summary>
+        public float WaterSurfaceY => (waterLevel + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
 
         /// <summary>
         /// rect transform of hex cell's ui label 
