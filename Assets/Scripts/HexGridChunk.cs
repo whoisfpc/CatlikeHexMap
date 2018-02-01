@@ -8,6 +8,7 @@ namespace HexMap
         public HexMesh terrain;
         public HexMesh rivers;
         public HexMesh roads;
+        public HexMesh water;
 
         private HexCell[] cells;
         private Canvas gridCanvas;
@@ -56,6 +57,7 @@ namespace HexMap
             terrain.Clear();
             rivers.Clear();
             roads.Clear();
+            water.Clear();
             for (int i = 0; i < cells.Length; i++)
             {
                 Triangulate(cells[i]);
@@ -63,6 +65,7 @@ namespace HexMap
             terrain.Apply();
             rivers.Apply();
             roads.Apply();
+            water.Apply();
         }
 
         /// <summary>
@@ -78,7 +81,8 @@ namespace HexMap
         }
 
         /// <summary>
-        /// Add a triangle and color for specified hex cell at specified direction
+        /// Add a triangle and color for specified hex cell at specified direction,
+        /// and deal with other map features, rivers, roads, and water.
         /// </summary>
         /// <param name="direction">specified direction</param>
         /// <param name="cell">hex cell</param>
@@ -117,6 +121,45 @@ namespace HexMap
             if (direction <= HexDirection.SE)
             {
                 TriangulateConnection(direction, cell, e);
+            }
+
+            if (cell.IsUnderwater)
+            {
+                TriangulateWater(direction, cell, center);
+            }
+        }
+
+        private void TriangulateWater(HexDirection direction, HexCell cell, Vector3 center)
+        {
+            center.y = cell.WaterSurfaceY;
+            var c1 = center + HexMetrics.GetFirstSolidCorner(direction);
+            var c2 = center + HexMetrics.GetSecondSolidCorner(direction);
+
+            water.AddTriangle(center, c1, c2);
+
+            if (direction <= HexDirection.SE)
+            {
+                HexCell neighbor = cell.GetNeighbor(direction);
+                if (neighbor == null || !neighbor.IsUnderwater)
+                {
+                    return;
+                }
+
+                Vector3 birdge = HexMetrics.GetBridge(direction);
+                var e1 = c1 + birdge;
+                var e2 = c2 + birdge;
+
+                water.AddQuad(c1, c2, e1, e2);
+
+                if (direction <= HexDirection.E)
+                {
+                    HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
+                    if (nextNeighbor == null || !nextNeighbor.IsUnderwater)
+                    {
+                        return;
+                    }
+                    water.AddTriangle(c2, e2, c2 + HexMetrics.GetBridge(direction.Next()));
+                }
             }
         }
 

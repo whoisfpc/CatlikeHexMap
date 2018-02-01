@@ -223,7 +223,7 @@ namespace HexMap
         }
 
         /// <summary>
-        /// Perturb position according to noise texture
+        /// Perturb (x,z) position according to noise texture
         /// </summary>
         /// <param name="position">position to perturb</param>
         /// <returns>position after perturbed</returns>
