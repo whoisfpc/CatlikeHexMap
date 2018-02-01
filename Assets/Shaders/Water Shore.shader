@@ -1,4 +1,4 @@
-﻿Shader "Custom/Water" {
+﻿Shader "Custom/Water Shore" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
@@ -37,9 +37,12 @@
 		UNITY_INSTANCING_BUFFER_END(Props)
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
+			float shore = IN.uv_MainTex.y;
+			float foam = Foam(shore, IN.worldPos.xz, _MainTex);
 			float waves = Waves(IN.worldPos.xz, _MainTex);
+			waves *= 1 - shore;
 
-			fixed4 c = saturate(_Color + waves);
+			fixed4 c = saturate(_Color + max(foam, waves));
 			o.Albedo = c.rgb;
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;

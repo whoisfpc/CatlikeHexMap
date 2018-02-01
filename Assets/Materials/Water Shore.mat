@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Water
-  m_Shader: {fileID: 4800000, guid: 2ed74426701ed104f8605715c8dc8494, type: 3}
+  m_Name: Water Shore
+  m_Shader: {fileID: 4800000, guid: fb5efda0ee6030f44ad4420c7a8cdeca, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

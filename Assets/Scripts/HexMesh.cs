@@ -19,7 +19,7 @@ namespace HexMap
         [NonSerialized]private List<Vector3> vertices;
         [NonSerialized]private List<int> triangles;
         [NonSerialized]private List<Color> colors;
-        [NonSerialized] private List<Vector2> uvs;
+        [NonSerialized]private List<Vector2> uvs;
 
         private void Awake()
         {
