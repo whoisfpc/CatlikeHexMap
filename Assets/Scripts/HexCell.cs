@@ -47,6 +47,8 @@ namespace HexMap
 
         public bool HasRiverBeginOrEnd => hasIncomingRiver != hasOutgoingRiver;
 
+        public HexDirection RiverBeginOrEndDirection => hasIncomingRiver ? incomingRiver : outgoingRiver;
+
         /// <summary>
         /// Stream bed y position
         /// </summary>

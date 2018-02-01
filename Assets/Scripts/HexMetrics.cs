@@ -200,7 +200,7 @@ namespace HexMap
         /// <summary>
         /// Perturb strength
         /// </summary>
-        public const float cellPerturbStrength = 4f;
+        public const float cellPerturbStrength = 0f;//4f;
 
         /// <summary>
         /// Perturb strength for elevation
