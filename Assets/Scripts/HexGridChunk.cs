@@ -149,14 +149,14 @@ namespace HexMap
 
         private void TriangulateOpenWater(HexDirection direction, HexCell cell, HexCell neighbor, Vector3 center)
         {
-            var c1 = center + HexMetrics.GetFirstSolidCorner(direction);
-            var c2 = center + HexMetrics.GetSecondSolidCorner(direction);
+            var c1 = center + HexMetrics.GetFirstWaterCorner(direction);
+            var c2 = center + HexMetrics.GetSecondWaterCorner(direction);
 
             water.AddTriangle(center, c1, c2);
 
             if (direction <= HexDirection.SE)
             {
-                Vector3 birdge = HexMetrics.GetBridge(direction);
+                Vector3 birdge = HexMetrics.GetWaterBridge(direction);
                 var e1 = c1 + birdge;
                 var e2 = c2 + birdge;
 
@@ -169,7 +169,7 @@ namespace HexMap
                     {
                         return;
                     }
-                    water.AddTriangle(c2, e2, c2 + HexMetrics.GetBridge(direction.Next()));
+                    water.AddTriangle(c2, e2, c2 + HexMetrics.GetWaterBridge(direction.Next()));
                 }
             }
         }
@@ -177,16 +177,20 @@ namespace HexMap
         private void TriangulateWaterShore(HexDirection direction, HexCell cell, HexCell neighbor, Vector3 center)
         {
             EdgeVertices e1 = new EdgeVertices(
-                center + HexMetrics.GetFirstSolidCorner(direction),
-                center + HexMetrics.GetSecondSolidCorner(direction)
+                center + HexMetrics.GetFirstWaterCorner(direction),
+                center + HexMetrics.GetSecondWaterCorner(direction)
             );
             water.AddTriangle(center, e1.v1, e1.v2);
             water.AddTriangle(center, e1.v2, e1.v3);
             water.AddTriangle(center, e1.v3, e1.v4);
             water.AddTriangle(center, e1.v4, e1.v5);
 
-            Vector3 bridge = HexMetrics.GetBridge(direction);
-            EdgeVertices e2 = new EdgeVertices(e1.v1 + bridge, e1.v5 + bridge);
+            Vector3 center2 = neighbor.Position;
+            center2.y = center.y;
+            EdgeVertices e2 = new EdgeVertices(
+                center2 + HexMetrics.GetSecondSolidCorner(direction.Opposite()),
+                center2 + HexMetrics.GetFirstSolidCorner(direction.Opposite())
+            );
             waterShore.AddQuad(e1.v1, e1.v2, e2.v1, e2.v2);
             waterShore.AddQuad(e1.v2, e1.v3, e2.v2, e2.v3);
             waterShore.AddQuad(e1.v3, e1.v4, e2.v3, e2.v4);
@@ -199,7 +203,12 @@ namespace HexMap
             HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
             if (nextNeighbor != null)
             {
-                waterShore.AddTriangle(e1.v5, e2.v5, e1.v5 + HexMetrics.GetBridge(direction.Next()));
+                Vector3 v3 = nextNeighbor.Position + (nextNeighbor.IsUnderwater ?
+                    HexMetrics.GetFirstWaterCorner(direction.Previous()) :
+                    HexMetrics.GetFirstSolidCorner(direction.Previous())
+                );
+                v3.y = center.y;
+                waterShore.AddTriangle(e1.v5, e2.v5, v3);
                 waterShore.AddTriangleUV(
                     new Vector2(0f, 0f),
                     new Vector2(0f, 1f),
