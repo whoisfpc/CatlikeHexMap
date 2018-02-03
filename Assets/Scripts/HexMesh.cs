@@ -13,6 +13,7 @@ namespace HexMap
         public bool useCollider;
         public bool useColors;
         public bool useUVCoordinates;
+        public bool useUV2Coordinates;
 
         private Mesh hexMesh;
         private MeshCollider meshCollider;
@@ -20,6 +21,7 @@ namespace HexMap
         [NonSerialized]private List<int> triangles;
         [NonSerialized]private List<Color> colors;
         [NonSerialized]private List<Vector2> uvs;
+        [NonSerialized] private List<Vector2> uv2s;
 
         private void Awake()
         {
@@ -46,6 +48,10 @@ namespace HexMap
             {
                 uvs = ListPool<Vector2>.Get();
             }
+            if (useUV2Coordinates)
+            {
+                uv2s = ListPool<Vector2>.Get();
+            }
             triangles = ListPool<int>.Get();
         }
 
@@ -65,6 +71,11 @@ namespace HexMap
             {
                 hexMesh.SetUVs(0, uvs);
                 ListPool<Vector2>.Add(uvs);
+            }
+            if (useUV2Coordinates)
+            {
+                hexMesh.SetUVs(1, uv2s);
+                ListPool<Vector2>.Add(uv2s);
             }
             hexMesh.SetTriangles(triangles, 0);
             ListPool<int>.Add(triangles);
@@ -258,6 +269,49 @@ namespace HexMap
             uvs.Add(new Vector2(uMax, vMin));
             uvs.Add(new Vector2(uMin, vMax));
             uvs.Add(new Vector2(uMax, vMax));
+        }
+
+        /// <summary>
+        /// Add uv2 for a triangle
+        /// </summary>
+        /// <param name="uv1">first uv coordinates</param>
+        /// <param name="uv2">second uv coordinates</param>
+        /// <param name="uv3">third uv coordinates</param>
+        public void AddTriangleUV2(Vector2 uv1, Vector2 uv2, Vector3 uv3)
+        {
+            uv2s.Add(uv1);
+            uv2s.Add(uv2);
+            uv2s.Add(uv3);
+        }
+
+        /// <summary>
+        /// Add uv2 for a quad
+        /// </summary>
+        /// <param name="uv1">first uv coordinates</param>
+        /// <param name="uv2">second uv coordinates</param>
+        /// <param name="uv3">third uv coordinates</param>
+        /// <param name="uv4">fourth uv coordinates</param>
+        public void AddQuadUV2(Vector2 uv1, Vector2 uv2, Vector3 uv3, Vector3 uv4)
+        {
+            uv2s.Add(uv1);
+            uv2s.Add(uv2);
+            uv2s.Add(uv3);
+            uv2s.Add(uv4);
+        }
+
+        /// <summary>
+        /// Add uv2 for a rectangular quad
+        /// </summary>
+        /// <param name="uMin">min coordinates of u axis</param>
+        /// <param name="uMax">max coordinates of u axis</param>
+        /// <param name="vMin">min coordinates of v axis</param>
+        /// <param name="vMax">max coordinates of v axis</param>
+        public void AddQuadUV2(float uMin, float uMax, float vMin, float vMax)
+        {
+            uv2s.Add(new Vector2(uMin, vMin));
+            uv2s.Add(new Vector2(uMax, vMin));
+            uv2s.Add(new Vector2(uMin, vMax));
+            uv2s.Add(new Vector2(uMax, vMax));
         }
     }
 }
