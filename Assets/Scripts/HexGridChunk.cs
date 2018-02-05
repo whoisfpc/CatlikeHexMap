@@ -88,7 +88,10 @@ namespace HexMap
             {
                 Triangulate(d, cell);
             }
-            features.AddFeature(cell.Position);
+            if (!cell.IsUnderwater && !cell.HasRiver && !cell.HasRoads)
+            {
+                features.AddFeature(cell.Position);
+            }
         }
 
         /// <summary>
@@ -127,6 +130,10 @@ namespace HexMap
             else
             {
                 TriangulateWithoutRiver(direction, cell, center, e);
+                if (!cell.IsUnderwater && !cell.HasRoadThroughEdge(direction))
+                {
+                    features.AddFeature((center + e.v1 + e.v5) * (1f / 3f));
+                }
             }
 
             if (direction <= HexDirection.SE)
@@ -389,6 +396,11 @@ namespace HexMap
             EdgeVertices m = new EdgeVertices(Vector3.Lerp(center, e.v1, 0.5f), Vector3.Lerp(center, e.v5, 0.5f));
             TriangulateEdgeStrip(m, cell.Color, e, cell.Color);
             TriangulateEdgeFan(center, m, cell.Color);
+
+            if (!cell.IsUnderwater && !cell.HasRoadThroughEdge(direction))
+            {
+                features.AddFeature((center + e.v1 + e.v5) * (1f / 3f));
+            }
         }
 
         private void TriangulateRoadAdjacentToRiver(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
