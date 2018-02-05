@@ -109,11 +109,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4639175090847736}
-  - component: {fileID: 33074973092667776}
-  - component: {fileID: 23046753877968698}
-  - component: {fileID: 114802538186686510}
+  - component: {fileID: 114279835157653886}
   m_Layer: 0
-  m_Name: Estuarties
+  m_Name: Features
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -131,6 +129,24 @@ GameObject:
   - component: {fileID: 114859985576593072}
   m_Layer: 5
   m_Name: Hex Grid Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1862008896696620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4569277071637424}
+  - component: {fileID: 33074973092667776}
+  - component: {fileID: 23046753877968698}
+  - component: {fileID: 114802538186686510}
+  m_Layer: 0
+  m_Name: Estuarties
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -181,9 +197,23 @@ Transform:
   - {fileID: 4598277383564350}
   - {fileID: 4630015095506494}
   - {fileID: 4053084159570640}
+  - {fileID: 4569277071637424}
   - {fileID: 4639175090847736}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4569277071637424
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1862008896696620}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4530597668340216}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4598277383564350
 Transform:
@@ -222,7 +252,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4530597668340216}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4745658138684310
 Transform:
@@ -255,7 +285,7 @@ MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1703453138403620}
+  m_GameObject: {fileID: 1862008896696620}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 1
@@ -459,7 +489,7 @@ MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1703453138403620}
+  m_GameObject: {fileID: 1862008896696620}
   m_Mesh: {fileID: 0}
 --- !u!33 &33095183218126990
 MeshFilter:
@@ -543,6 +573,20 @@ MonoBehaviour:
   water: {fileID: 114235192822029836}
   waterShore: {fileID: 114631493537056852}
   estuaries: {fileID: 114802538186686510}
+  features: {fileID: 114279835157653886}
+--- !u!114 &114279835157653886
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1703453138403620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf25b3cefd8cb5a4c8f8babe2f88b94c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  featurePrefab: {fileID: 4299844552673496, guid: 39c58d1dffe0c4643b2096f74fadbdbd,
+    type: 2}
 --- !u!114 &114631493537056852
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -578,7 +622,7 @@ MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1703453138403620}
+  m_GameObject: {fileID: 1862008896696620}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fc49e92e3f8cdb4089728c33b423d3f, type: 3}

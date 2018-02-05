@@ -12,6 +12,8 @@ namespace HexMap
         public HexMesh waterShore;
         public HexMesh estuaries;
 
+        public HexFeatureManager features;
+
         private HexCell[] cells;
         private Canvas gridCanvas;
 
@@ -62,6 +64,7 @@ namespace HexMap
             water.Clear();
             waterShore.Clear();
             estuaries.Clear();
+            features.Clear();
             for (int i = 0; i < cells.Length; i++)
             {
                 Triangulate(cells[i]);
@@ -72,6 +75,7 @@ namespace HexMap
             water.Apply();
             waterShore.Apply();
             estuaries.Apply();
+            features.Apply();
         }
 
         /// <summary>
@@ -84,6 +88,7 @@ namespace HexMap
             {
                 Triangulate(d, cell);
             }
+            features.AddFeature(cell.Position);
         }
 
         /// <summary>
