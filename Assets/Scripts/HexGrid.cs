@@ -26,6 +26,11 @@ namespace HexMap
 
         public Texture2D noiseSource;
 
+        /// <summary>
+        /// Hash Grid random seed
+        /// </summary>
+        public int seed;
+
         private HexCell[] cells;
         private HexGridChunk[] chunks;
 
@@ -37,6 +42,7 @@ namespace HexMap
         private void Awake()
         {
             HexMetrics.noiseSource = noiseSource;
+            HexMetrics.InitializeHashGrid(seed);
             cellCountX = chunkCountX * HexMetrics.chunkSizeX;
             cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
             CreateChunks();
@@ -45,7 +51,11 @@ namespace HexMap
 
         private void OnEnable()
         {
-            HexMetrics.noiseSource = noiseSource;
+            if (!HexMetrics.noiseSource)
+            {
+                HexMetrics.noiseSource = noiseSource;
+                HexMetrics.InitializeHashGrid(seed);
+            }
         }
 
         public void ShowUI(bool visible)
