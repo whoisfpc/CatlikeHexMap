@@ -12,6 +12,26 @@ namespace HexMap
         /// </summary>
         public HexCoordinates coordinates;
 
+        private int urbanLevel;
+        /// <summary>
+        /// Feature likeihood level
+        /// </summary>
+        public int UrbanLevel
+        {
+            get
+            {
+                return urbanLevel;
+            }
+            set
+            {
+                if (urbanLevel != value)
+                {
+                    urbanLevel = value;
+                    RefreshSelfOnly();
+                }
+            }
+        }
+
         private Color color;
         /// <summary>
         /// color of this hex cell

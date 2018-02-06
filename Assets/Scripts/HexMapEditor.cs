@@ -36,6 +36,8 @@ namespace HexMap
 
         private int activeWaterLevel;
 
+        private int activeUrbanLevel;
+
         /// <summary>
         /// flag for should apply color
         /// </summary>
@@ -47,6 +49,8 @@ namespace HexMap
         private bool applyElevation = true;
 
         private bool applyWaterLevel = true;
+
+        private bool applyUrbanLevel = true;
 
         private int brushSize;
 
@@ -147,6 +151,10 @@ namespace HexMap
                 {
                     cell.WaterLevel = activeWaterLevel;
                 }
+                if (applyUrbanLevel)
+                {
+                    cell.UrbanLevel = activeUrbanLevel;
+                }
                 if (riverMode == OptionalToggle.No)
                 {
                     cell.RemoveRiver();
@@ -195,6 +203,11 @@ namespace HexMap
             applyWaterLevel = toggle;
         }
 
+        public void SetApplyUrbanLevel(bool toggle)
+        {
+            applyUrbanLevel = toggle;
+        }
+
         public void SetWaterLevel(float level)
         {
             activeWaterLevel = (int)level;
@@ -203,6 +216,11 @@ namespace HexMap
         public void SetBrushSize(float size)
         {
             brushSize = (int)size;
+        }
+
+        public void SetUrbanLevel(float level)
+        {
+            activeUrbanLevel = (int)level;
         }
 
         public void ShowUI(bool visible)
