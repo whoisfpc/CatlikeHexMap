@@ -37,6 +37,8 @@ namespace HexMap
         private int activeWaterLevel;
 
         private int activeUrbanLevel;
+        private int activeFarmLevel;
+        private int activePlantLevel;
 
         /// <summary>
         /// flag for should apply color
@@ -51,6 +53,8 @@ namespace HexMap
         private bool applyWaterLevel = true;
 
         private bool applyUrbanLevel = true;
+        private bool applyFarmLevel = true;
+        private bool applyPlantLevel = true;
 
         private int brushSize;
 
@@ -163,6 +167,14 @@ namespace HexMap
                 {
                     cell.RemoveRoads();
                 }
+                if (applyFarmLevel)
+                {
+                    cell.FarmLevel = activeFarmLevel;
+                }
+                if (applyPlantLevel)
+                {
+                    cell.PlantLevel = activePlantLevel;
+                }
                 if (isDrag)
                 {
                     HexCell otherCell = cell.GetNeighbor(dragDirection.Opposite());
@@ -221,6 +233,26 @@ namespace HexMap
         public void SetUrbanLevel(float level)
         {
             activeUrbanLevel = (int)level;
+        }
+
+        public void SetApplyFarmLevel(bool toggle)
+        {
+            applyFarmLevel = toggle;
+        }
+
+        public void SetFarmLevel(float level)
+        {
+            activeFarmLevel = (int)level;
+        }
+
+        public void SetApplyPlantLevel(bool toggle)
+        {
+            applyPlantLevel = toggle;
+        }
+
+        public void SetPlantLevel(float level)
+        {
+            activePlantLevel = (int)level;
         }
 
         public void ShowUI(bool visible)

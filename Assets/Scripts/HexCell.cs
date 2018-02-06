@@ -12,6 +12,46 @@ namespace HexMap
         /// </summary>
         public HexCoordinates coordinates;
 
+        private int farmLevel;
+        /// <summary>
+        /// Farm feature likeihood level
+        /// </summary>
+        public int FarmLevel
+        {
+            get
+            {
+                return farmLevel;
+            }
+            set
+            {
+                if (farmLevel != value)
+                {
+                    farmLevel = value;
+                    RefreshSelfOnly();
+                }
+            }
+        }
+
+        private int plantLevel;
+        /// <summary>
+        /// Plant feature likeihood
+        /// </summary>
+        public int PlantLevel
+        {
+            get
+            {
+                return plantLevel;
+            }
+            set
+            {
+                if (plantLevel != value)
+                {
+                    plantLevel = value;
+                    RefreshSelfOnly();
+                }
+            }
+        }
+
         private int urbanLevel;
         /// <summary>
         /// urban feature likeihood level
