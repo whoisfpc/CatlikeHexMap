@@ -585,8 +585,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf25b3cefd8cb5a4c8f8babe2f88b94c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  featurePrefab: {fileID: 4299844552673496, guid: 39c58d1dffe0c4643b2096f74fadbdbd,
-    type: 2}
+  urbanCollections:
+  - prefabs:
+    - {fileID: 4095507849458984, guid: 7084b03d8a860194f96be47b9c4f9130, type: 2}
+    - {fileID: 4067397560601290, guid: 090e5ddd5f115bc4c99df3ea828bc5ed, type: 2}
+  - prefabs:
+    - {fileID: 4491659286772252, guid: 6a0e6793bf631f34b8032e6903f39f4e, type: 2}
+    - {fileID: 4074372795568004, guid: 4be485cba403a504485dc9ad993706a0, type: 2}
+  - prefabs:
+    - {fileID: 4786359270312022, guid: 489d0972fb88aae40bfcc5137fc44449, type: 2}
+    - {fileID: 4299844552673496, guid: 39c58d1dffe0c4643b2096f74fadbdbd, type: 2}
 --- !u!114 &114631493537056852
 MonoBehaviour:
   m_ObjectHideFlags: 1

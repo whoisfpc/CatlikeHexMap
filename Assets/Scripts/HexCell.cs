@@ -14,7 +14,7 @@ namespace HexMap
 
         private int urbanLevel;
         /// <summary>
-        /// Feature likeihood level
+        /// urban feature likeihood level
         /// </summary>
         public int UrbanLevel
         {
