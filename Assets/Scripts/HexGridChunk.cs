@@ -581,6 +581,8 @@ namespace HexMap
                 TriangulateEdgeStrip(e1, cell.Color, e2, neighbor.Color, cell.HasRoadThroughEdge(direction));
             }
 
+            features.AddWall(e1, cell, e2, neighbor);
+
             HexCell nextNeighbor = cell.GetNeighbor(direction.Next());
             if (direction <= HexDirection.E && nextNeighbor != null)
             {
@@ -706,6 +708,8 @@ namespace HexMap
                 terrain.AddTriangle(bottom, left, right);
                 terrain.AddTriangleColor(bottomCell.Color, leftCell.Color, rightCell.Color);
             }
+
+            features.AddWall(bottom, bottomCell, left, leftCell, right, rightCell);
         }
 
         /// <summary>

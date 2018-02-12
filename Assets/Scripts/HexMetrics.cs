@@ -8,6 +8,16 @@ namespace HexMap
     public static class HexMetrics
     {
         /// <summary>
+        /// Thickness of wall feature
+        /// </summary>
+        public const float wallThickness = 0.75f;
+
+        /// <summary>
+        /// Height of wall feature
+        /// </summary>
+        public const float wallHeight = 3f;
+
+        /// <summary>
         /// Stream bed elevation offset
         /// </summary>
         public const float streamBedElevationOffset = -1.75f;
@@ -297,6 +307,15 @@ namespace HexMap
         public static float[] GetFeatureThresholds(int level)
         {
             return featureThresholds[level];
+        }
+
+        public static Vector3 WallThicknessOffset(Vector3 near, Vector3 far)
+        {
+            Vector3 offset;
+            offset.x = far.x - near.x;
+            offset.y = 0f;
+            offset.z = far.z - near.z;
+            return offset.normalized * (wallThickness * 0.5f);
         }
     }
 }
