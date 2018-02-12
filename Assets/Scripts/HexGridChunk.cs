@@ -679,7 +679,6 @@ namespace HexMap
                     TriangulateCornerTerraces(
                         right, rightCell, bottom, bottomCell, left, leftCell
                     );
-                    return;
                 }
                 else
                 {
