@@ -18,6 +18,11 @@ namespace HexMap
         public const float wallHeight = 3f;
 
         /// <summary>
+        /// wall elevation offset on terraces
+        /// </summary>
+        public const float wallElevationOffset = verticalTerraceStepSize;
+
+        /// <summary>
         /// Stream bed elevation offset
         /// </summary>
         public const float streamBedElevationOffset = -1.75f;
@@ -192,6 +197,16 @@ namespace HexMap
         {
             float h = step * horizontalTerraceStepSize;
             return Color.Lerp(a, b, h);
+        }
+
+        public static Vector3 WallLerp(Vector3 near, Vector3 far)
+        {
+            near.x += (far.x - near.x) * 0.5f;
+            near.z += (far.z - near.z) * 0.5f;
+            float v =
+                near.y < far.y ? wallElevationOffset : (1f - wallElevationOffset);
+            near.y += (far.y - near.y) * v;
+            return near;
         }
 
         /// <summary>
