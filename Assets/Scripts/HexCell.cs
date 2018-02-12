@@ -72,6 +72,26 @@ namespace HexMap
             }
         }
 
+        private bool walled;
+        /// <summary>
+        /// wall feature
+        /// </summary>
+        public bool Walled
+        {
+            get
+            {
+                return walled;
+            }
+            set
+            {
+                if (walled != value)
+                {
+                    walled = value;
+                    Refresh();
+                }
+            }
+        }
+
         private Color color;
         /// <summary>
         /// color of this hex cell
