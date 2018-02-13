@@ -39,6 +39,7 @@ namespace HexMap
         private int activeUrbanLevel;
         private int activeFarmLevel;
         private int activePlantLevel;
+        private int activeSpecialIndex;
 
         /// <summary>
         /// flag for should apply color
@@ -55,6 +56,7 @@ namespace HexMap
         private bool applyUrbanLevel = true;
         private bool applyFarmLevel = true;
         private bool applyPlantLevel = true;
+        private bool applySpecialIndex = true;
 
         private int brushSize;
 
@@ -176,6 +178,10 @@ namespace HexMap
                 {
                     cell.PlantLevel = activePlantLevel;
                 }
+                if (applySpecialIndex)
+                {
+                    cell.SpecialIndex = activeSpecialIndex;
+                }
                 if (walledMode != OptionalToggle.Ignore)
                 {
                     cell.Walled = walledMode == OptionalToggle.Yes;
@@ -258,6 +264,16 @@ namespace HexMap
         public void SetPlantLevel(float level)
         {
             activePlantLevel = (int)level;
+        }
+
+        public void SetApplySpecialIndex(bool toggle)
+        {
+            applySpecialIndex = toggle;
+        }
+
+        public void SetSpecialIndex(float index)
+        {
+            activeSpecialIndex = (int)index;
         }
 
         public void ShowUI(bool visible)

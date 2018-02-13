@@ -12,6 +12,29 @@ namespace HexMap
         /// </summary>
         public HexCoordinates coordinates;
 
+        private int specialIndex;
+        /// <summary>
+        /// index of special features
+        /// </summary>
+        public int SpecialIndex
+        {
+            get
+            {
+                return specialIndex;
+            }
+            set
+            {
+                if (specialIndex != value && !HasRiver)
+                {
+                    specialIndex = value;
+                    RemoveRoads();
+                    RefreshSelfOnly();
+                }
+            }
+        }
+
+        public bool IsSpecial => specialIndex > 0;
+
         private int farmLevel;
         /// <summary>
         /// Farm feature likeihood level
@@ -317,9 +340,11 @@ namespace HexMap
             }
             hasOutgoingRiver = true;
             outgoingRiver = direction;
+            specialIndex = 0;
             neighbor.RemoveIncomingRiver();
             neighbor.hasIncomingRiver = true;
             neighbor.incomingRiver = direction.Opposite();
+            neighbor.specialIndex = 0;
             SetRoad((int)direction, false);
         }
 
@@ -330,7 +355,8 @@ namespace HexMap
 
         public void AddRoad(HexDirection direction)
         {
-            if (!roads[(int)direction] && !HasRiverThroughEdge(direction) && GetElevationDifference(direction) <= 1)
+            bool notHasSpecial = !IsSpecial && !GetNeighbor(direction).IsSpecial;
+            if (!roads[(int)direction] && !HasRiverThroughEdge(direction) && GetElevationDifference(direction) <= 1 && notHasSpecial)
             {
                 SetRoad((int)direction, true);
             }

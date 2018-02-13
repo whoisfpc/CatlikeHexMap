@@ -8,6 +8,7 @@ namespace HexMap
         public HexMesh walls;
         public Transform wallTower;
         public Transform bridge;
+        public Transform[] special;
 
         private Transform container;
 
@@ -25,6 +26,15 @@ namespace HexMap
         public void Apply()
         {
             walls.Apply();
+        }
+
+        public void AddSpecialFeature(HexCell cell, Vector3 position)
+        {
+            Transform instance = Instantiate(special[cell.SpecialIndex - 1]);
+            instance.localPosition = HexMetrics.Perturb(position);
+            HexHash hash = HexMetrics.SampleHashGrid(position);
+            instance.localRotation = Quaternion.Euler(0f, 360f * hash.e, 0f);
+            instance.SetParent(container, false);
         }
 
         public void AddBridge(Vector3 roadCenter1, Vector3 roadCenter2)
@@ -223,6 +233,10 @@ namespace HexMap
 
         public void AddFeature(HexCell cell, Vector3 position)
         {
+            if (cell.IsSpecial)
+            {
+                return;
+            }
             HexHash hash = HexMetrics.SampleHashGrid(position);
             Transform prefab = PickPrefab(urbanCollections, cell.UrbanLevel, hash.a, hash.d);
             Transform otherPrefab = PickPrefab(farmCollections, cell.FarmLevel, hash.b, hash.d);
