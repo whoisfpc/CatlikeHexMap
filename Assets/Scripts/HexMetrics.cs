@@ -7,6 +7,12 @@ namespace HexMap
     /// </summary>
     public static class HexMetrics
     {
+
+        /// <summary>
+        /// Likeihood threshold of wall tower at wall corner
+        /// </summary>
+        public const float wallTowerThreshold = 0.5f;
+
         /// <summary>
         /// Thickness of wall feature
         /// </summary>
@@ -15,7 +21,12 @@ namespace HexMap
         /// <summary>
         /// Height of wall feature
         /// </summary>
-        public const float wallHeight = 3f;
+        public const float wallHeight = 4f;
+
+        /// <summary>
+        /// Wall position offset of Y
+        /// </summary>
+        public const float wallYOffset = -1f;
 
         /// <summary>
         /// wall elevation offset on terraces
@@ -205,7 +216,7 @@ namespace HexMap
             near.z += (far.z - near.z) * 0.5f;
             float v =
                 near.y < far.y ? wallElevationOffset : (1f - wallElevationOffset);
-            near.y += (far.y - near.y) * v;
+            near.y += (far.y - near.y) * v + wallYOffset;
             return near;
         }
 
