@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: e64c369ddb65a27418926fdb3724e368
+labels:
+- Features
 timeCreated: 1517929762
 licenseType: Free
 NativeFormatImporter:
