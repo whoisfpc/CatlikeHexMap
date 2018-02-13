@@ -7,6 +7,10 @@ namespace HexMap
     /// </summary>
     public static class HexMetrics
     {
+        /// <summary>
+        /// Design length of bridge prefab
+        /// </summary>
+        public const float bridgeDesignLength = 7f;
 
         /// <summary>
         /// Likeihood threshold of wall tower at wall corner

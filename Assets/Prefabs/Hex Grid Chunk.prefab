@@ -705,6 +705,7 @@ MonoBehaviour:
     - {fileID: 4657400917893524, guid: 58fd46ac40296904e986f3be91816c84, type: 2}
   walls: {fileID: 114236756304170108}
   wallTower: {fileID: 4483358649910982, guid: ceb5a80de14acdd4bafb26fb80b1e266, type: 2}
+  bridge: {fileID: 4000012598710820, guid: 234387bb7219042168570e127fbd5b58, type: 2}
 --- !u!114 &114631493537056852
 MonoBehaviour:
   m_ObjectHideFlags: 1

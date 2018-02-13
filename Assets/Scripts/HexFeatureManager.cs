@@ -7,6 +7,7 @@ namespace HexMap
         public HexFeatureCollection[] urbanCollections, farmCollections, plantCollections;
         public HexMesh walls;
         public Transform wallTower;
+        public Transform bridge;
 
         private Transform container;
 
@@ -24,6 +25,18 @@ namespace HexMap
         public void Apply()
         {
             walls.Apply();
+        }
+
+        public void AddBridge(Vector3 roadCenter1, Vector3 roadCenter2)
+        {
+            Transform instance = Instantiate(bridge);
+            roadCenter1 = HexMetrics.Perturb(roadCenter1);
+            roadCenter2 = HexMetrics.Perturb(roadCenter2);
+            instance.localPosition = (roadCenter1 + roadCenter2) * 0.5f;
+            instance.forward = roadCenter2 - roadCenter1;
+            float length = Vector3.Distance(roadCenter1, roadCenter2);
+            instance.localScale = new Vector3(1f, 1f, length * (1f / HexMetrics.bridgeDesignLength));
+            instance.SetParent(container, false);
         }
 
         public void AddWall(EdgeVertices near, HexCell nearCell, EdgeVertices far, HexCell farCell, bool hasRiver, bool hasRoad)
