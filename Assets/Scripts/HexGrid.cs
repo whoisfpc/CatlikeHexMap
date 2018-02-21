@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 namespace HexMap
 {
@@ -13,10 +14,7 @@ namespace HexMap
         /// </summary>
         public int chunkCountX = 4, chunkCountZ = 3;
 
-        /// <summary>
-        /// Default hex cell color
-        /// </summary>
-        public Color defaultColor = Color.white;
+        public Color[] colors;
 
         public HexCell cellPrefab;
 
@@ -43,6 +41,7 @@ namespace HexMap
         {
             HexMetrics.noiseSource = noiseSource;
             HexMetrics.InitializeHashGrid(seed);
+            HexMetrics.colors = colors;
             cellCountX = chunkCountX * HexMetrics.chunkSizeX;
             cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
             CreateChunks();
@@ -55,6 +54,7 @@ namespace HexMap
             {
                 HexMetrics.noiseSource = noiseSource;
                 HexMetrics.InitializeHashGrid(seed);
+                HexMetrics.colors = colors;
             }
         }
 
@@ -89,6 +89,26 @@ namespace HexMap
                 {
                     CreateCell(x, z, i++);
                 }
+            }
+        }
+
+        public void Save(BinaryWriter writer)
+        {
+            for (int i = 0; i < cells.Length; i++)
+            {
+                cells[i].Save(writer);
+            }
+        }
+
+        public void Load(BinaryReader reader)
+        {
+            for (int i = 0; i < cells.Length; i++)
+            {
+                cells[i].Load(reader);
+            }
+            for (int i = 0; i < chunks.Length; i++)
+            {
+                chunks[i].Refresh();
             }
         }
 
@@ -141,7 +161,6 @@ namespace HexMap
             var cell = cells[i] = Instantiate(cellPrefab);
             cell.transform.localPosition = position;
             cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-            cell.Color = defaultColor;
 
             if (x > 0)
             {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using System.IO;
 
 namespace HexMap
 {
@@ -16,43 +17,20 @@ namespace HexMap
         }
 
         /// <summary>
-        /// Optional color array
-        /// </summary>
-        public Color[] colors;
-        /// <summary>
         /// Hexagon grid to edit
         /// </summary>
         public HexGrid hexGrid;
 
-        /// <summary>
-        /// Current active color
-        /// </summary>
-        private Color activeColor;
-
-        /// <summary>
-        /// Current active elevation
-        /// </summary>
+        private int activeTerrainTypeIndex;
         private int activeElevation;
-
         private int activeWaterLevel;
-
         private int activeUrbanLevel;
         private int activeFarmLevel;
         private int activePlantLevel;
         private int activeSpecialIndex;
 
-        /// <summary>
-        /// flag for should apply color
-        /// </summary>
-        private bool applyColor;
-
-        /// <summary>
-        /// flag for should apply elevation
-        /// </summary>
         private bool applyElevation = true;
-
         private bool applyWaterLevel = true;
-
         private bool applyUrbanLevel = true;
         private bool applyFarmLevel = true;
         private bool applyPlantLevel = true;
@@ -67,11 +45,6 @@ namespace HexMap
         private bool isDrag;
         private HexDirection dragDirection;
         private HexCell previousCell;
-
-        private void Awake()
-        {
-            SelectColor(0);
-        }
 
         private void Update()
         {
@@ -146,9 +119,9 @@ namespace HexMap
         {
             if (cell)
             {
-                if (applyColor)
+                if (activeTerrainTypeIndex >= 0)
                 {
-                    cell.Color = activeColor;
+                    cell.TerrainTypeIndex = activeTerrainTypeIndex;
                 }
                 if (applyElevation)
                 {
@@ -204,11 +177,9 @@ namespace HexMap
             }
         }
 
-        public void SelectColor(int index)
+        public void SetTerrainTypeIndex(int index)
         {
-            applyColor = index >= 0;
-            if (applyColor)
-                activeColor = colors[index];
+            activeTerrainTypeIndex = index;
         }
 
         public void SetElevation(float elevation)
@@ -294,6 +265,30 @@ namespace HexMap
         public void SetWalledMode(int mode)
         {
             walledMode = (OptionalToggle)mode;
+        }
+
+        /// <summary>
+        /// Save current hex map
+        /// </summary>
+        public void Save()
+        {
+            string path = Path.Combine(Application.persistentDataPath, "test.map");
+            using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create)))
+            {
+                hexGrid.Save(writer);
+            }
+        }
+
+        /// <summary>
+        /// Load hex map
+        /// </summary>
+        public void Load()
+        {
+            string path = Path.Combine(Application.persistentDataPath, "test.map");
+            using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
+            {
+                hexGrid.Load(reader);
+            }
         }
     }
 }

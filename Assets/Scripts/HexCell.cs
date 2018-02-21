@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.IO;
 
 namespace HexMap
 {
@@ -115,24 +116,27 @@ namespace HexMap
             }
         }
 
-        private Color color;
-        /// <summary>
-        /// color of this hex cell
-        /// </summary>
-        public Color Color
+        private int terrainTypeIndex;
+        public int TerrainTypeIndex
         {
             get
             {
-                return color;
+                return terrainTypeIndex;
             }
             set
             {
-                if (color == value)
-                    return;
-                color = value;
-                Refresh();
+                if (terrainTypeIndex != value)
+                {
+                    terrainTypeIndex = value;
+                    Refresh();
+                }
             }
         }
+
+        /// <summary>
+        /// color of this hex cell
+        /// </summary>
+        public Color Color => HexMetrics.colors[terrainTypeIndex];
 
         private bool hasIncomingRiver;
         public bool HasIncomingRiver => hasIncomingRiver;
@@ -238,14 +242,7 @@ namespace HexMap
                 if (elevation == value)
                     return;
                 elevation = value;
-                Vector3 position = transform.localPosition;
-                position.y = value * HexMetrics.elevationStep;
-                position.y += (HexMetrics.SampleNoise(position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
-                transform.localPosition = position;
-
-                Vector3 uiPosition = uiRect.localPosition;
-                uiPosition.z = -position.y;
-                uiRect.localPosition = uiPosition;
+                RefreshPosition();
                 ValidateRivers();
                 for (int i = 0; i < roads.Length; i++)
                 {
@@ -259,6 +256,64 @@ namespace HexMap
         }
 
         public Vector3 Position => transform.localPosition;
+
+        private void RefreshPosition()
+        {
+            Vector3 position = transform.localPosition;
+            position.y = elevation * HexMetrics.elevationStep;
+            position.y += (HexMetrics.SampleNoise(position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
+            transform.localPosition = position;
+
+            Vector3 uiPosition = uiRect.localPosition;
+            uiPosition.z = -position.y;
+            uiRect.localPosition = uiPosition;
+        }
+
+        public void Save(BinaryWriter writer)
+        {
+            writer.Write(terrainTypeIndex);
+            writer.Write(elevation);
+            writer.Write(waterLevel);
+            writer.Write(urbanLevel);
+            writer.Write(farmLevel);
+            writer.Write(plantLevel);
+            writer.Write(specialIndex);
+            writer.Write(walled);
+
+            writer.Write(hasIncomingRiver);
+            writer.Write((int)incomingRiver);
+            writer.Write(hasOutgoingRiver);
+            writer.Write((int)outgoingRiver);
+
+            for (int i = 0; i < roads.Length; i++)
+            {
+                writer.Write(roads[i]);
+            }
+        }
+
+        public void Load(BinaryReader reader)
+        {
+            terrainTypeIndex = reader.ReadInt32();
+            elevation = reader.ReadInt32();
+            RefreshPosition();
+            waterLevel = reader.ReadInt32();
+            urbanLevel = reader.ReadInt32();
+            farmLevel = reader.ReadInt32();
+            plantLevel = reader.ReadInt32();
+            specialIndex = reader.ReadInt32();
+            walled = reader.ReadBoolean();
+
+            hasIncomingRiver = reader.ReadBoolean();
+            incomingRiver = (HexDirection)reader.ReadInt32();
+
+            hasOutgoingRiver = reader.ReadBoolean();
+            outgoingRiver = (HexDirection)reader.ReadInt32();
+
+            for (int i = 0; i < roads.Length; i++)
+            {
+                roads[i] = reader.ReadBoolean();
+            }
+        }
 
         public HexCell GetNeighbor(HexDirection direction)
         {
