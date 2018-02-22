@@ -10,9 +10,9 @@ namespace HexMap
     public class HexGrid : MonoBehaviour
     {
         /// <summary>
-        /// hex map chunk count
+        /// hex map cell count
         /// </summary>
-        public int chunkCountX = 4, chunkCountZ = 3;
+        public int cellCountX = 20, cellCountZ = 15;
 
         public Color[] colors;
 
@@ -31,19 +31,36 @@ namespace HexMap
 
         private HexCell[] cells;
         private HexGridChunk[] chunks;
-
-        /// <summary>
-        /// count of hex grid
-        /// </summary>
-        private int cellCountX, cellCountZ;
+        private int chunkCountX, chunkCountZ;
 
         private void Awake()
         {
             HexMetrics.noiseSource = noiseSource;
             HexMetrics.InitializeHashGrid(seed);
             HexMetrics.colors = colors;
-            cellCountX = chunkCountX * HexMetrics.chunkSizeX;
-            cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
+            CreateMap(cellCountX, cellCountZ);
+        }
+
+        public void CreateMap(int x, int z)
+        {
+            bool negativeSize = x <= 0 || z <= 0;
+            bool multipleChunkSize = x % HexMetrics.chunkSizeX == 0 && z % HexMetrics.chunkSizeZ == 0;
+            if (negativeSize && !multipleChunkSize)
+            {
+                Debug.LogError("Unsupported map size.");
+                return;
+            }
+            if (chunks != null)
+            {
+                for (int i = 0; i < chunks.Length; i++)
+                {
+                    Destroy(chunks[i].gameObject);
+                }
+            }
+            cellCountX = x;
+            cellCountZ = z;
+            chunkCountX = cellCountX / HexMetrics.chunkSizeX;
+            chunkCountZ = cellCountZ / HexMetrics.chunkSizeZ;
             CreateChunks();
             CreateCells();
         }
