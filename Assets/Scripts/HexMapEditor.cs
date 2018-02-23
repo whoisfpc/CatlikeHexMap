@@ -266,39 +266,5 @@ namespace HexMap
         {
             walledMode = (OptionalToggle)mode;
         }
-
-        /// <summary>
-        /// Save current hex map
-        /// </summary>
-        public void Save()
-        {
-            string path = Path.Combine(Application.persistentDataPath, "test.map");
-            using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create)))
-            {
-                writer.Write(1); // file head magic number
-                hexGrid.Save(writer);
-            }
-        }
-
-        /// <summary>
-        /// Load hex map
-        /// </summary>
-        public void Load()
-        {
-            string path = Path.Combine(Application.persistentDataPath, "test.map");
-            using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
-            {
-                int header = reader.ReadInt32();
-                if (header <= 1)
-                {
-                    hexGrid.Load(reader, header);
-                    HexMapCamera.ValidatePosition();
-                }
-                else
-                {
-                    Debug.LogWarning("Unknown map format " + header);
-                }
-            }
-        }
     }
 }
