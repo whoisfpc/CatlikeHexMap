@@ -275,7 +275,7 @@ namespace HexMap
             string path = Path.Combine(Application.persistentDataPath, "test.map");
             using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create)))
             {
-                writer.Write(0); // file head magic number
+                writer.Write(1); // file head magic number
                 hexGrid.Save(writer);
             }
         }
@@ -289,9 +289,10 @@ namespace HexMap
             using (BinaryReader reader = new BinaryReader(File.Open(path, FileMode.Open)))
             {
                 int header = reader.ReadInt32();
-                if (header == 0)
+                if (header <= 1)
                 {
-                    hexGrid.Load(reader);
+                    hexGrid.Load(reader, header);
+                    HexMapCamera.ValidatePosition();
                 }
                 else
                 {
