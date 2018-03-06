@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.IO;
 using System;
+using HexMap.MapEditor;
 
 namespace HexMap
 {
