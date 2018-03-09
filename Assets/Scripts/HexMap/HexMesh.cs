@@ -14,14 +14,15 @@ namespace HexMap
         public bool useColors;
         public bool useUVCoordinates;
         public bool useUV2Coordinates;
+        public bool useTerrainTypes;
 
         private Mesh hexMesh;
         private MeshCollider meshCollider;
-        [NonSerialized]private List<Vector3> vertices;
+        [NonSerialized]private List<Vector3> vertices, terrainTypes;
         [NonSerialized]private List<int> triangles;
         [NonSerialized]private List<Color> colors;
         [NonSerialized]private List<Vector2> uvs;
-        [NonSerialized] private List<Vector2> uv2s;
+        [NonSerialized]private List<Vector2> uv2s;
 
         private void Awake()
         {
@@ -40,6 +41,10 @@ namespace HexMap
         {
             hexMesh.Clear();
             vertices = ListPool<Vector3>.Get();
+            if (useTerrainTypes)
+            {
+                terrainTypes = ListPool<Vector3>.Get();
+            }
             if (useColors)
             {
                 colors = ListPool<Color>.Get();
@@ -76,6 +81,11 @@ namespace HexMap
             {
                 hexMesh.SetUVs(1, uv2s);
                 ListPool<Vector2>.Add(uv2s);
+            }
+            if (useTerrainTypes)
+            {
+                hexMesh.SetUVs(2, terrainTypes);
+                ListPool<Vector3>.Add(terrainTypes);
             }
             hexMesh.SetTriangles(triangles, 0);
             ListPool<int>.Add(triangles);
@@ -312,6 +322,21 @@ namespace HexMap
             uv2s.Add(new Vector2(uMax, vMin));
             uv2s.Add(new Vector2(uMin, vMax));
             uv2s.Add(new Vector2(uMax, vMax));
+        }
+
+        public void AddTriangleTerrainTypes(Vector3 types)
+        {
+            terrainTypes.Add(types);
+            terrainTypes.Add(types);
+            terrainTypes.Add(types);
+        }
+
+        public void AddQuadTerrainTypes(Vector3 types)
+        {
+            terrainTypes.Add(types);
+            terrainTypes.Add(types);
+            terrainTypes.Add(types);
+            terrainTypes.Add(types);
         }
     }
 }

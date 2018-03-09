@@ -614,6 +614,7 @@ MonoBehaviour:
   useColors: 1
   useUVCoordinates: 0
   useUV2Coordinates: 0
+  useTerrainTypes: 1
 --- !u!114 &114235192822029836
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -629,6 +630,7 @@ MonoBehaviour:
   useColors: 0
   useUVCoordinates: 0
   useUV2Coordinates: 0
+  useTerrainTypes: 0
 --- !u!114 &114236756304170108
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -644,6 +646,7 @@ MonoBehaviour:
   useColors: 0
   useUVCoordinates: 0
   useUV2Coordinates: 0
+  useTerrainTypes: 0
 --- !u!114 &114239633593655318
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -725,6 +728,7 @@ MonoBehaviour:
   useColors: 0
   useUVCoordinates: 1
   useUV2Coordinates: 0
+  useTerrainTypes: 0
 --- !u!114 &114726260108153542
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -740,6 +744,7 @@ MonoBehaviour:
   useColors: 0
   useUVCoordinates: 1
   useUV2Coordinates: 0
+  useTerrainTypes: 0
 --- !u!114 &114802538186686510
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -755,6 +760,7 @@ MonoBehaviour:
   useColors: 0
   useUVCoordinates: 1
   useUV2Coordinates: 1
+  useTerrainTypes: 0
 --- !u!114 &114859985576593072
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -791,6 +797,7 @@ MonoBehaviour:
   useColors: 0
   useUVCoordinates: 1
   useUV2Coordinates: 0
+  useTerrainTypes: 0
 --- !u!223 &223389859415092480
 Canvas:
   m_ObjectHideFlags: 1

@@ -133,11 +133,6 @@ namespace HexMap
             }
         }
 
-        /// <summary>
-        /// color of this hex cell
-        /// </summary>
-        public Color Color => HexMetrics.colors[terrainTypeIndex];
-
         private bool hasIncomingRiver;
         public bool HasIncomingRiver => hasIncomingRiver;
 

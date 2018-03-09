@@ -7,12 +7,6 @@ namespace HexMap
     /// </summary>
     public static class HexMetrics
     {
-
-        /// <summary>
-        /// HexCell colors
-        /// </summary>
-        public static Color[] colors;
-
         /// <summary>
         /// Design length of bridge prefab
         /// </summary>

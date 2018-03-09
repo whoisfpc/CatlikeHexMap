@@ -14,8 +14,6 @@ namespace HexMap
         /// </summary>
         public int cellCountX = 20, cellCountZ = 15;
 
-        public Color[] colors;
-
         public HexCell cellPrefab;
 
         public Text cellLabelPrefab;
@@ -37,7 +35,6 @@ namespace HexMap
         {
             HexMetrics.noiseSource = noiseSource;
             HexMetrics.InitializeHashGrid(seed);
-            HexMetrics.colors = colors;
             CreateMap(cellCountX, cellCountZ);
         }
 
@@ -72,7 +69,6 @@ namespace HexMap
             {
                 HexMetrics.noiseSource = noiseSource;
                 HexMetrics.InitializeHashGrid(seed);
-                HexMetrics.colors = colors;
             }
         }
 
