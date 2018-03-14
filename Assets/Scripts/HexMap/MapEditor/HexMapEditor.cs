@@ -20,6 +20,7 @@ namespace HexMap.MapEditor
         /// Hexagon grid to edit
         /// </summary>
         public HexGrid hexGrid;
+        public Material terrainMaterial;
 
         private int activeTerrainTypeIndex;
         private int activeElevation;
@@ -45,6 +46,11 @@ namespace HexMap.MapEditor
         private bool isDrag;
         private HexDirection dragDirection;
         private HexCell previousCell;
+
+        private void Awake()
+        {
+            terrainMaterial.DisableKeyword("GRID_ON");
+        }
 
         private void Update()
         {
@@ -265,6 +271,18 @@ namespace HexMap.MapEditor
         public void SetWalledMode(int mode)
         {
             walledMode = (OptionalToggle)mode;
+        }
+
+        public void ShowGrid(bool visible)
+        {
+            if (visible)
+            {
+                terrainMaterial.EnableKeyword("GRID_ON");
+            }
+            else
+            {
+                terrainMaterial.DisableKeyword("GRID_ON");
+            }
         }
     }
 }
