@@ -70,7 +70,8 @@ namespace HexMap.MapEditor
 
         private void AdjustRotation(float delta)
         {
-            rotationAngle += delta * rotationSpeed * Time.deltaTime;
+            // subtract delta to let camera rotate clockwise when press "Q" and anti-clockwise when press "E"
+            rotationAngle -= delta * rotationSpeed * Time.deltaTime;
             rotationAngle = Mathf.Repeat(rotationAngle, 360f);
             transform.localRotation = Quaternion.Euler(0f, rotationAngle, 0f);
         }
