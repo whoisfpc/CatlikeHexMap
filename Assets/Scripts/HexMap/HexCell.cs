@@ -270,7 +270,7 @@ namespace HexMap
         public void UpdateDistanceLabel()
         {
             Text label = uiRect.GetComponent<Text>();
-            label.text = distance.ToString();
+            label.text = distance == int.MaxValue ? "" : distance.ToString();
         }
 
         private void RefreshPosition()

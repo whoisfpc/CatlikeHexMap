@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace HexMap
 {
@@ -74,9 +76,42 @@ namespace HexMap
 
         public void FindDistancesTo(HexCell cell)
         {
+            StopAllCoroutines();
+            StartCoroutine(Search(cell));
+        }
+
+        private IEnumerator Search(HexCell cell)
+        {
             for (int i = 0; i < cells.Length; i++)
             {
-                cells[i].Distance = cell.coordinates.DistanceTo(cells[i].coordinates);
+                cells[i].Distance = int.MaxValue;
+            }
+            WaitForSeconds delay = new WaitForSeconds(1 / 60f);
+            Queue<HexCell> frontier = new Queue<HexCell>();
+            cell.Distance = 0;
+            frontier.Enqueue(cell);
+            while (frontier.Count > 0)
+            {
+                yield return delay;
+                HexCell current = frontier.Dequeue();
+                for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++)
+                {
+                    HexCell neighbor = current.GetNeighbor(d);
+                    if (neighbor == null || neighbor.Distance != int.MaxValue)
+                    {
+                        continue;
+                    }
+                    if (neighbor.IsUnderwater)
+                    {
+                        continue;
+                    }
+                    if (current.GetEdgeType(neighbor) == HexEdgeType.Cliff)
+                    {
+                        continue;
+                    }
+                    neighbor.Distance = current.Distance + 1;
+                    frontier.Enqueue(neighbor);
+                }
             }
         }
 
@@ -127,6 +162,7 @@ namespace HexMap
 
         public void Load(BinaryReader reader, int header)
         {
+            StopAllCoroutines();
             int x = 20, z = 15;
             if (header >= 1)
             {
