@@ -43,6 +43,7 @@ namespace HexMap.MapEditor
         private OptionalToggle roadMode;
         private OptionalToggle walledMode;
 
+        private bool editMode;
         private bool isDrag;
         private HexDirection dragDirection;
         private HexCell previousCell;
@@ -79,7 +80,10 @@ namespace HexMap.MapEditor
                 {
                     isDrag = false;
                 }
-                EditCells(currentCell);
+                if (editMode)
+                {
+                    EditCells(currentCell);
+                }
                 previousCell = currentCell;
             }
             else
@@ -253,11 +257,6 @@ namespace HexMap.MapEditor
             activeSpecialIndex = (int)index;
         }
 
-        public void ShowUI(bool visible)
-        {
-            hexGrid.ShowUI(visible);
-        }
-
         public void SetRiverMode(int mode)
         {
             riverMode = (OptionalToggle)mode;
@@ -283,6 +282,12 @@ namespace HexMap.MapEditor
             {
                 terrainMaterial.DisableKeyword("GRID_ON");
             }
+        }
+
+        public void SetEditMode(bool toggle)
+        {
+            editMode = toggle;
+            hexGrid.ShowUI(!toggle);
         }
     }
 }

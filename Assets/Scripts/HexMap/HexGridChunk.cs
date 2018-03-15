@@ -27,7 +27,6 @@ namespace HexMap
 
             cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
             gridCanvas.worldCamera = Camera.main;
-            ShowUI(false);
         }
 
         /// <summary>
