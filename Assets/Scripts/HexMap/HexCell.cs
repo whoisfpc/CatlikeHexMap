@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
 
 namespace HexMap
 {
@@ -251,6 +252,26 @@ namespace HexMap
         }
 
         public Vector3 Position => transform.localPosition;
+
+        private int distance;
+        public int Distance
+        {
+            get
+            {
+                return distance;
+            }
+            set
+            {
+                distance = value;
+                UpdateDistanceLabel();
+            }
+        }
+
+        public void UpdateDistanceLabel()
+        {
+            Text label = uiRect.GetComponent<Text>();
+            label.text = distance.ToString();
+        }
 
         private void RefreshPosition()
         {

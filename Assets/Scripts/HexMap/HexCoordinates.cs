@@ -86,5 +86,18 @@ namespace HexMap
         /// </summary>
         /// <returns>A string represent this hex coordinates </returns>
         public string ToStringOnSeparateLines() => $"{X}\n{Y}\n{Z}";
+
+        /// <summary>
+        /// Distance to other hex
+        /// </summary>
+        /// <param name="other">other hex coordinates</param>
+        /// <returns>distance to other hex coordinates</returns>
+        public int DistanceTo(HexCoordinates other)
+        {
+            return
+                ((x < other.x ? other.x - x : x - other.x) +
+                (Y < other.Y ? other.Y - Y : Y - other.Y) +
+                (z < other.z ? other.z - z : z - other.z)) / 2;
+        }
     }
 }

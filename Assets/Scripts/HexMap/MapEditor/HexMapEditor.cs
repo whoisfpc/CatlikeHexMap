@@ -84,6 +84,10 @@ namespace HexMap.MapEditor
                 {
                     EditCells(currentCell);
                 }
+                else
+                {
+                    hexGrid.FindDistancesTo(currentCell);
+                }
                 previousCell = currentCell;
             }
             else
