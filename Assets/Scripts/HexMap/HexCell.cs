@@ -14,6 +14,8 @@ namespace HexMap
         /// </summary>
         public HexCoordinates coordinates;
 
+        public HexCell PathFrom { get; set; }
+
         private int specialIndex;
         /// <summary>
         /// index of special features
