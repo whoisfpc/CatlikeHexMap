@@ -14,6 +14,12 @@ namespace HexMap
         /// </summary>
         public HexCoordinates coordinates;
 
+        public HexCell NextWithSamePriority { get; set; }
+
+        public int SearchPriority => distance + SearchHeuristic;
+
+        public int SearchHeuristic { get; set; }
+
         public HexCell PathFrom { get; set; }
 
         private int specialIndex;
