@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using HexMap.Util;
 
 namespace HexMap
 {
@@ -80,12 +81,12 @@ namespace HexMap
             StartCoroutine(Search(fromCell, toCell));
         }
 
-        private HexCellPriorityQueue searchFrontier;
+        private PriorityQueue<HexCell> searchFrontier;
         private IEnumerator Search(HexCell fromCell, HexCell toCell)
         {
             if (searchFrontier == null)
             {
-                searchFrontier = new HexCellPriorityQueue();
+                searchFrontier = new PriorityQueue<HexCell>((x, y) => x.SearchPriority.CompareTo(y.SearchPriority));
             }
             else
             {
@@ -155,9 +156,8 @@ namespace HexMap
                     }
                     else if (distance < neighbor.Distance)
                     {
-                        int oldPriority = neighbor.SearchPriority;
                         neighbor.Distance = distance;
-                        searchFrontier.Change(neighbor, oldPriority);
+                        searchFrontier.Change(neighbor);
                     }
                 }
             }

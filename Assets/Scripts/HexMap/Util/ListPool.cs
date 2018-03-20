@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace HexMap
+namespace HexMap.Util
 {
     public static class ListPool<T>
     {
