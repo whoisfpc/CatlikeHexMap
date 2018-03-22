@@ -13,6 +13,13 @@ namespace HexMap.Util
         private T[] queue;
         private int count;
 
+        public PriorityQueue() : this(DefaultInitalCapacity, null)
+        {
+        }
+
+        public PriorityQueue(int initialCapacity) : this(initialCapacity, null)
+        {
+        }
 
         public PriorityQueue(Comparison<T> comparison) : this(DefaultInitalCapacity, comparison)
         {
@@ -85,6 +92,18 @@ namespace HexMap.Util
 
         private void SiftUp(int k, T x)
         {
+            if (comparison != null)
+            {
+                SiftUpWithComparison(k, x);
+            }
+            else
+            {
+                SiftUpWithComparer(k, x);
+            }
+        }
+
+        private void SiftUpWithComparison(int k, T x)
+        {
             while (k > 0)
             {
                 int parent = (k - 1) >> 1;
@@ -99,7 +118,36 @@ namespace HexMap.Util
             queue[k] = x;
         }
 
+        private void SiftUpWithComparer(int k, T x)
+        {
+            var comparer = Comparer<T>.Default;
+            while (k > 0)
+            {
+                int parent = (k - 1) >> 1;
+                var e = queue[parent];
+                if (comparer.Compare(x, e) >= 0)
+                {
+                    break;
+                }
+                queue[k] = e;
+                k = parent;
+            }
+            queue[k] = x;
+        }
+
         private void SiftDown(int k, T x)
+        {
+            if (comparison != null)
+            {
+                SiftDownWithComparison(k, x);
+            }
+            else
+            {
+                SiftDownWithComparer(k, x);
+            }
+        }
+
+        private void SiftDownWithComparison(int k, T x)
         {
             int half = count >> 1;
             while (k < half)
@@ -108,6 +156,29 @@ namespace HexMap.Util
                 var c = queue[child];
                 int right = child + 1;
                 if (right < count && comparison(c, queue[right]) > 0)
+                {
+                    c = queue[child = right];
+                }
+                if (comparison(x, c) <= 0)
+                {
+                    break;
+                }
+                queue[k] = c;
+                k = child;
+            }
+            queue[k] = x;
+        }
+
+        private void SiftDownWithComparer(int k, T x)
+        {
+            var comparer = Comparer<T>.Default;
+            int half = count >> 1;
+            while (k < half)
+            {
+                int child = (k << 1) + 1;
+                var c = queue[child];
+                int right = child + 1;
+                if (right < count && comparer.Compare(c, queue[right]) > 0)
                 {
                     c = queue[child = right];
                 }
