@@ -271,14 +271,13 @@ namespace HexMap
             set
             {
                 distance = value;
-                UpdateDistanceLabel();
             }
         }
 
-        public void UpdateDistanceLabel()
+        public void SetLabel(string text)
         {
             Text label = uiRect.GetComponent<Text>();
-            label.text = distance == int.MaxValue ? "" : distance.ToString();
+            label.text = text;
         }
 
         private void RefreshPosition()
