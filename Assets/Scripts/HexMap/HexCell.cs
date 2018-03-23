@@ -274,6 +274,8 @@ namespace HexMap
             }
         }
 
+        public int SearchPhase { get; set; }
+
         public void SetLabel(string text)
         {
             Text label = uiRect.GetComponent<Text>();
