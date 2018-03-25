@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using HexMap.MapEditor;
 
-namespace HexMap
+namespace HexMap.MapEditor
 {
     public class NewMapMenu : MonoBehaviour
     {

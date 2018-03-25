@@ -66,6 +66,10 @@ namespace HexMap
             chunkCountZ = cellCountZ / HexMetrics.chunkSizeZ;
             CreateChunks();
             CreateCells();
+            for (int i = 0; i < cells.Length; i++)
+            {
+                cells[i].DisableHighlight();
+            }
             return true;
         }
 
