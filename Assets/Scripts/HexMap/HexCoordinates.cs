@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.IO;
 
 namespace HexMap
 {
@@ -31,6 +32,20 @@ namespace HexMap
         {
             this.x = x;
             this.z = z;
+        }
+
+        public void Save(BinaryWriter writer)
+        {
+            writer.Write(x);
+            writer.Write(z);
+        }
+
+        public static HexCoordinates Load(BinaryReader reader)
+        {
+            HexCoordinates c;
+            c.x = reader.ReadInt32();
+            c.z = reader.ReadInt32();
+            return c;
         }
 
         /// <summary>
