@@ -21,6 +21,7 @@ namespace HexMap.MapEditor
         /// </summary>
         public HexGrid hexGrid;
         public Material terrainMaterial;
+        public HexUnit unitPrefab;
 
         private int activeTerrainTypeIndex;
         private int activeElevation;
@@ -56,23 +57,66 @@ namespace HexMap.MapEditor
 
         private void Update()
         {
-            if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                HandleInput();
+                if (Input.GetMouseButton(0))
+                {
+                    HandleInput();
+                    return;
+                }
+                if (Input.GetKeyDown(KeyCode.U))
+                {
+                    if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        DestroyUnit();
+                    }
+                    else
+                    {
+                        CreateUnit();
+                    }
+                    return;
+                }
             }
-            else
-            {
-                previousCell = null;
-            }
+            previousCell = null;
         }
 
-        private void HandleInput()
+        private HexCell GetCellUnderCursor()
         {
             Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(inputRay, out hit))
             {
-                var currentCell = hexGrid.GetCell(hit.point);
+                return hexGrid.GetCell(hit.point);
+            }
+            return null;
+        }
+
+        private void CreateUnit()
+        {
+            var cell = GetCellUnderCursor();
+            if (cell && !cell.Unit)
+            {
+                var unit = Instantiate(unitPrefab);
+                unit.transform.SetParent(hexGrid.transform, false);
+                unit.Location = cell;
+                unit.Orientation = Random.Range(0f, 360f);
+            }
+        }
+
+        private void DestroyUnit()
+        {
+            HexCell cell = GetCellUnderCursor();
+            if (cell && cell.Unit)
+            {
+                cell.Unit.Die();
+            }
+        }
+
+        private void HandleInput()
+        {
+            var currentCell = GetCellUnderCursor();
+            if (currentCell)
+            {
                 if (previousCell && previousCell != currentCell)
                 {
                     ValidateDrg(currentCell);

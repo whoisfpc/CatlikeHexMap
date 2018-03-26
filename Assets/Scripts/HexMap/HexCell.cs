@@ -22,6 +22,8 @@ namespace HexMap
 
         public HexCell PathFrom { get; set; }
 
+        public HexUnit Unit { get; set; }
+
         private int specialIndex;
         /// <summary>
         /// index of special features
@@ -517,13 +519,19 @@ namespace HexMap
         private void Refresh()
         {
             if (chunk)
-                chunk.Refresh();
-            for (int i = 0; i < neighbors.Length; i++)
             {
-                var neighbor = neighbors[i];
-                if (neighbor != null && neighbor.chunk != chunk)
+                chunk.Refresh();
+                for (int i = 0; i < neighbors.Length; i++)
                 {
-                    neighbor.chunk.Refresh();
+                    var neighbor = neighbors[i];
+                    if (neighbor != null && neighbor.chunk != chunk)
+                    {
+                        neighbor.chunk.Refresh();
+                    }
+                }
+                if (Unit)
+                {
+                    Unit.ValidateLocation();
                 }
             }
         }
@@ -531,6 +539,10 @@ namespace HexMap
         private void RefreshSelfOnly()
         {
             chunk.Refresh();
+            if (Unit)
+            {
+                Unit.ValidateLocation();
+            }
         }
 
         private bool IsValidRiverDestination(HexCell neighbor)
