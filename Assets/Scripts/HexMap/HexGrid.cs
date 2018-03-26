@@ -27,6 +27,8 @@ namespace HexMap
 
         public Texture2D noiseSource;
 
+        public bool HasPath => currentPathExists;
+
         /// <summary>
         /// Hash Grid random seed
         /// </summary>
@@ -137,7 +139,7 @@ namespace HexMap
             currentPathTo.EnableHighlight(Color.red);
         }
 
-        private void ClearPath()
+        public void ClearPath()
         {
             if (currentPathExists)
             {
@@ -150,6 +152,14 @@ namespace HexMap
                 }
                 current.DisableHighlight();
                 currentPathExists = false;
+            }
+            if (currentPathFrom)
+            {
+                currentPathFrom.DisableHighlight();
+            }
+            if (currentPathTo)
+            {
+                currentPathTo.DisableHighlight();
             }
             currentPathFrom = currentPathTo = null;
         }
@@ -189,7 +199,7 @@ namespace HexMap
                     {
                         continue;
                     }
-                    if (neighbor.IsUnderwater)
+                    if (neighbor.IsUnderwater || neighbor.Unit)
                     {
                         continue;
                     }
@@ -338,6 +348,21 @@ namespace HexMap
             HexCoordinates coordinates = HexCoordinates.FromPosition(position);
             int index = coordinates.X + coordinates.Z * cellCountX + coordinates.Z / 2;
             return cells[index];
+        }
+
+        /// <summary>
+        /// Obtain hex cell with specific ray
+        /// </summary>
+        /// <param name="ray">the ray</param>
+        /// <returns>the hex cell or null if ray is not intersect with cell</returns>
+        public HexCell GetCell(Ray ray)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                return GetCell(hit.point);
+            }
+            return null;
         }
 
         /// <summary>

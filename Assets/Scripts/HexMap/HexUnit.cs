@@ -16,6 +16,10 @@ namespace HexMap
             }
             set
             {
+                if (location)
+                {
+                    location.Unit = null;
+                }
                 location = value;
                 value.Unit = this;
                 transform.localPosition = value.Position;
@@ -51,6 +55,11 @@ namespace HexMap
         {
             location.coordinates.Save(writer);
             writer.Write(orientation);
+        }
+
+        public bool IsValidDestination(HexCell cell)
+        {
+            return !cell.IsUnderwater && !cell.Unit;
         }
 
         public static void Load(BinaryReader reader, HexGrid grid)
