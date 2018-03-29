@@ -40,12 +40,14 @@ namespace HexMap
         private List<HexUnit> units = new List<HexUnit>();
         private HexCell currentPathFrom, currentPathTo;
         private bool currentPathExists;
+        private HexCellShaderData cellShaderData;
 
         private void Awake()
         {
             HexMetrics.noiseSource = noiseSource;
             HexMetrics.InitializeHashGrid(seed);
             HexUnit.unitPrefab = unitPrefab;
+            cellShaderData = gameObject.AddComponent<HexCellShaderData>();
             CreateMap(cellCountX, cellCountZ);
         }
 
@@ -71,6 +73,7 @@ namespace HexMap
             cellCountZ = z;
             chunkCountX = cellCountX / HexMetrics.chunkSizeX;
             chunkCountZ = cellCountZ / HexMetrics.chunkSizeZ;
+            cellShaderData.Initialize(cellCountX, cellCountZ);
             CreateChunks();
             CreateCells();
             for (int i = 0; i < cells.Length; i++)
@@ -416,7 +419,9 @@ namespace HexMap
 
             var cell = cells[i] = Instantiate(cellPrefab);
             cell.transform.localPosition = position;
+            cell.Index = i;
             cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+            cell.ShaderData = cellShaderData;
 
             if (x > 0)
             {

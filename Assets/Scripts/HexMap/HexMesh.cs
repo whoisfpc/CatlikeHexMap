@@ -12,16 +12,15 @@ namespace HexMap
     public class HexMesh : MonoBehaviour
     {
         public bool useCollider;
-        public bool useColors;
+        public bool useCellData;
         public bool useUVCoordinates;
         public bool useUV2Coordinates;
-        public bool useTerrainTypes;
 
         private Mesh hexMesh;
         private MeshCollider meshCollider;
-        [NonSerialized]private List<Vector3> vertices, terrainTypes;
+        [NonSerialized]private List<Vector3> vertices, cellIndices;
         [NonSerialized]private List<int> triangles;
-        [NonSerialized]private List<Color> colors;
+        [NonSerialized]private List<Color> cellWeights;
         [NonSerialized]private List<Vector2> uvs;
         [NonSerialized]private List<Vector2> uv2s;
 
@@ -42,13 +41,10 @@ namespace HexMap
         {
             hexMesh.Clear();
             vertices = ListPool<Vector3>.Get();
-            if (useTerrainTypes)
+            if (useCellData)
             {
-                terrainTypes = ListPool<Vector3>.Get();
-            }
-            if (useColors)
-            {
-                colors = ListPool<Color>.Get();
+                cellIndices = ListPool<Vector3>.Get();
+                cellWeights = ListPool<Color>.Get();
             }
             if (useUVCoordinates)
             {
@@ -68,10 +64,12 @@ namespace HexMap
         {
             hexMesh.SetVertices(vertices);
             ListPool<Vector3>.Add(vertices);
-            if (useColors)
+            if (useCellData)
             {
-                hexMesh.SetColors(colors);
-                ListPool<Color>.Add(colors);
+                hexMesh.SetColors(cellWeights);
+                ListPool<Color>.Add(cellWeights);
+                hexMesh.SetUVs(2, cellIndices);
+                ListPool<Vector3>.Add(cellIndices);
             }
             if (useUVCoordinates)
             {
@@ -82,11 +80,6 @@ namespace HexMap
             {
                 hexMesh.SetUVs(1, uv2s);
                 ListPool<Vector2>.Add(uv2s);
-            }
-            if (useTerrainTypes)
-            {
-                hexMesh.SetUVs(2, terrainTypes);
-                ListPool<Vector3>.Add(terrainTypes);
             }
             hexMesh.SetTriangles(triangles, 0);
             ListPool<int>.Add(triangles);
@@ -132,30 +125,6 @@ namespace HexMap
         }
 
         /// <summary>
-        /// Add vertex color for a triangle
-        /// </summary>
-        /// <param name="color">vertex color</param>
-        public void AddTriangleColor(Color color)
-        {
-            colors.Add(color);
-            colors.Add(color);
-            colors.Add(color);
-        }
-
-        /// <summary>
-        /// Add vertex color for a triangle
-        /// </summary>
-        /// <param name="c1">first vertex color</param>
-        /// <param name="c2">first vertex color</param>
-        /// <param name="c3">first vertex color</param>
-        public void AddTriangleColor(Color c1, Color c2, Color c3)
-        {
-            colors.Add(c1);
-            colors.Add(c2);
-            colors.Add(c3);
-        }
-
-        /// <summary>
         /// Add a quad to hex map mesh
         /// </summary>
         /// <param name="v1">first quad vertex</param>
@@ -197,46 +166,6 @@ namespace HexMap
             triangles.Add(vertexIndex + 1);
             triangles.Add(vertexIndex + 2);
             triangles.Add(vertexIndex + 3);
-        }
-
-        /// <summary>
-        /// Add vertex color for a quad
-        /// </summary>
-        /// <param name="color">first vertex color</param>
-        public void AddQuadColor(Color color)
-        {
-            colors.Add(color);
-            colors.Add(color);
-            colors.Add(color);
-            colors.Add(color);
-        }
-
-        /// <summary>
-        /// Add vertex color for a quad
-        /// </summary>
-        /// <param name="c1">first vertex color</param>
-        /// <param name="c2">second vertex color</param>
-        public void AddQuadColor(Color c1, Color c2)
-        {
-            colors.Add(c1);
-            colors.Add(c1);
-            colors.Add(c2);
-            colors.Add(c2);
-        }
-
-        /// <summary>
-        /// Add vertex color for a quad
-        /// </summary>
-        /// <param name="c1">first vertex color</param>
-        /// <param name="c2">second vertex color</param>
-        /// <param name="c3">third vertex color</param>
-        /// <param name="c4">fourth vertex color</param>
-        public void AddQuadColor(Color c1, Color c2, Color c3, Color c4)
-        {
-            colors.Add(c1);
-            colors.Add(c2);
-            colors.Add(c3);
-            colors.Add(c4);
         }
 
         /// <summary>
@@ -325,19 +254,41 @@ namespace HexMap
             uv2s.Add(new Vector2(uMax, vMax));
         }
 
-        public void AddTriangleTerrainTypes(Vector3 types)
+        public void AddTriangleCellData(Vector3 indices, Color weights1, Color weights2, Color weights3)
         {
-            terrainTypes.Add(types);
-            terrainTypes.Add(types);
-            terrainTypes.Add(types);
+            cellIndices.Add(indices);
+            cellIndices.Add(indices);
+            cellIndices.Add(indices);
+            cellWeights.Add(weights1);
+            cellWeights.Add(weights2);
+            cellWeights.Add(weights3);
         }
 
-        public void AddQuadTerrainTypes(Vector3 types)
+        public void AddTriangleCellData(Vector3 indices, Color weights)
         {
-            terrainTypes.Add(types);
-            terrainTypes.Add(types);
-            terrainTypes.Add(types);
-            terrainTypes.Add(types);
+            AddTriangleCellData(indices, weights, weights, weights);
+        }
+
+        public void AddQuadCellData(Vector3 indices, Color weights1, Color weights2, Color weights3, Color weights4)
+        {
+            cellIndices.Add(indices);
+            cellIndices.Add(indices);
+            cellIndices.Add(indices);
+            cellIndices.Add(indices);
+            cellWeights.Add(weights1);
+            cellWeights.Add(weights2);
+            cellWeights.Add(weights3);
+            cellWeights.Add(weights4);
+        }
+
+        public void AddQuadCellData(Vector3 indices, Color weights1, Color weights2)
+        {
+            AddQuadCellData(indices, weights1, weights1, weights2, weights2);
+        }
+
+        public void AddQuadCellData(Vector3 indices, Color weights)
+        {
+            AddQuadCellData(indices, weights, weights, weights, weights);
         }
     }
 }
