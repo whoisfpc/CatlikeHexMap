@@ -26,6 +26,9 @@ namespace HexMap
 
         public HexUnit Unit { get; set; }
 
+        private int visibility;
+        public bool IsVisible => visibility > 0;
+
         private int specialIndex;
         /// <summary>
         /// index of special features
@@ -390,6 +393,24 @@ namespace HexMap
             Image highlight = uiRect.GetChild(0).GetComponent<Image>();
             highlight.color = color;
             highlight.enabled = true;
+        }
+
+        public void IncreaseVisibility()
+        {
+            visibility += 1;
+            if (visibility == 1)
+            {
+                ShaderData.RefreshVisibility(this);
+            }
+        }
+
+        public void DecreaseVisibility()
+        {
+            visibility -= 1;
+            if (visibility == 0)
+            {
+                ShaderData.RefreshVisibility(this);
+            }
         }
 
         public HexCell GetNeighbor(HexDirection direction)
